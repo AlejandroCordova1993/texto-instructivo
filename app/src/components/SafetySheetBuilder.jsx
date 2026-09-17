@@ -470,7 +470,7 @@ export function SafetySheetBuilder() {
                   ¿Conectores o numeración (1, 2, 3...)?
                 </p>
                 <p className="mt-1 text-xs leading-relaxed text-charcoal">
-                  En los textos instructivos de taller, el orden se puede señalar tanto con <strong>numeración directa (1, 2, 3...)</strong> como mediante <strong>conectores cronológicos (Inicialmente... Posteriormente... Finalmente...)</strong> en párrafo continuo. Ambos métodos son válidos en la industria. En esta actividad puedes redactar en bloque o numerar tus oraciones (ej. <em>«1. Inicialmente, fijar... 2. Posteriormente, accionar... 3. Finalmente, desconectar...»</em>), asegurándote de incorporar al menos 2 conectores de orden.
+                  En los textos instructivos de taller, el orden se puede señalar tanto con <strong>numeración directa (1, 2, 3...)</strong> como mediante <strong>conectores cronológicos (Inicialmente... Posteriormente... Finalmente...)</strong> en párrafo continuo. Ambos métodos son válidos en la industria (como en las <Termino term="hojas sop">hojas SOP</Termino> y manuales de fabricante). En esta actividad puedes redactar en bloque o numerar tus oraciones (ej. <em>«1. Inicialmente, fijar... 2. Posteriormente, accionar... 3. Finalmente, desconectar...»</em>), asegurándote de incorporar al menos 2 conectores de orden.
                 </p>
               </div>
 

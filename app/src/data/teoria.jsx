@@ -1,3 +1,6 @@
+import React from 'react';
+import { Termino } from '../components/Glosario';
+
 /* Teoría del taller.
  *
  * Contenido tomado del documento de teoría del docente (Temas 1 y 2,
@@ -157,7 +160,11 @@ export const TEORIA = {
       {
         tipo: 'concepto',
         titulo: '¿Conectores o numeración (1, 2, 3...)?',
-        texto: 'En los textos instructivos técnicos existen dos maneras estándar de ordenar los pasos: 1) Listas numeradas (1, 2, 3...) o viñetas, habituales en checklists, hojas SOP y manuales de fabricante; y 2) Párrafo continuo con conectores cronológicos (inicialmente, posteriormente, finalmente), propio de especificaciones e informes formales. Ambos métodos son válidos y complementarios.',
+        texto: (
+          <>
+            En los textos instructivos técnicos existen dos maneras estándar de ordenar los pasos: 1) Listas numeradas (1, 2, 3...) o viñetas, habituales en checklists, <Termino term="hojas sop">hojas SOP</Termino> y manuales de fabricante; y 2) Párrafo continuo con conectores cronológicos (inicialmente, posteriormente, finalmente), propio de especificaciones e informes formales. Ambos métodos son válidos y complementarios.
+          </>
+        ),
       },
     ],
     resumen: [

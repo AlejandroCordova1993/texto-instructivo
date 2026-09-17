@@ -115,6 +115,16 @@ export const GLOSARIO = {
   'plano técnico': {
     def: 'Representación gráfica normalizada en 2D o 3D con vistas, cotas, tolerancias y símbolos AWS que especifica con exactitud cómo fabricar una estructura.',
   },
+  'hojas sop': {
+    titulo: 'Hojas SOP (Procedimiento Operativo Estandarizado)',
+    def: 'Documentos breves y visuales fijados junto a la máquina que detallan paso a paso cómo ejecutar una tarea de forma segura, uniforme y sin errores (del inglés Standard Operating Procedure).',
+    ejemplo: 'Hoja SOP plastificada con los pasos numerados del 1 al 5 para encendido, calibración y parada de emergencia.',
+  },
+  'sop': {
+    titulo: 'SOP (Standard Operating Procedure)',
+    def: 'Procedimiento Operativo Estandarizado: guía técnica oficial que establece la secuencia exacta de pasos para realizar un trabajo en el taller o fábrica con idéntica calidad y seguridad.',
+    ejemplo: 'Checklist o protocolo de mantenimiento fijado en el puesto de trabajo.',
+  },
 };
 
 /** Busca una entrada sin importar mayúsculas ni espacios sobrantes. */

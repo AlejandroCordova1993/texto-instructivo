@@ -292,7 +292,7 @@ export function SequenceConnectors() {
                 ¿Conectores o numeración (1, 2, 3...)?
               </p>
               <p className="text-[11.5px] text-charcoal/90">
-                En el taller técnico también es muy común señalar el orden con <strong>números (1, 2, 3...)</strong> o viñetas en checklists y manuales de fabricante. Ambos recursos (conectores temporales o listas numeradas) son válidos y complementarios para garantizar que el operario no altere el orden crítico.
+                En el taller técnico también es muy común señalar el orden con <strong>números (1, 2, 3...)</strong> o viñetas en checklists, <Termino term="hojas sop">hojas SOP</Termino> y manuales de fabricante. Ambos recursos (conectores temporales o listas numeradas) son válidos y complementarios para garantizar que el operario no altere el orden crítico.
               </p>
             </div>
           </div>

@@ -76,18 +76,24 @@ function Popover({ id, term, entry, triggerRef, panelRef, pos, setPos, onClose }
       let left = t.left + t.width / 2 - width / 2;
       left = Math.max(margin, Math.min(left, window.innerWidth - width - margin));
 
-      /* Encima del término si cabe; si no, debajo.
-         El limite superior no es el borde de la ventana sino la altura del
-         encabezado pegajoso: si no, el cuadro se monta sobre la navegacion. */
-      const header = document.querySelector('header');
-      const topLimit = (header?.getBoundingClientRect().bottom || 0) + margin;
+      /* Encima del término si cabe; si no, debajo. */
+      const topLimit = margin;
+      const actualHeight = panelRef.current?.offsetHeight || p?.height || height;
+      const spaceAbove = t.top - topLimit - 8;
+      const spaceBelow = window.innerHeight - t.bottom - margin - 8;
 
-      const above = t.top - height - 10;
-      const top = above > topLimit
-        ? above
-        : Math.min(t.bottom + 10, window.innerHeight - height - margin);
+      let top;
+      if (spaceBelow >= actualHeight) {
+        top = t.bottom + 8;
+      } else if (spaceAbove >= actualHeight) {
+        top = t.top - actualHeight - 8;
+      } else {
+        top = spaceBelow >= spaceAbove ? t.bottom + 8 : t.top - actualHeight - 8;
+      }
 
-      setPos({ left, top: Math.max(top, topLimit) });
+      top = Math.max(margin, Math.min(top, Math.max(margin, window.innerHeight - actualHeight - margin)));
+
+      setPos({ left, top });
     };
 
     place();
@@ -125,7 +131,9 @@ function Popover({ id, term, entry, triggerRef, panelRef, pos, setPos, onClose }
         position: 'fixed',
         left: pos?.left ?? -9999,
         top: pos?.top ?? -9999,
-        width: 'min(20rem, calc(100vw - 1.5rem))',
+        width: 'min(21rem, calc(100vw - 1.5rem))',
+        maxHeight: 'calc(100vh - 2rem)',
+        overflowY: 'auto',
       }}
       className="on-deep z-[70] animate-settleIn border border-dim/40 bg-deep-blue p-4 text-paper-warm no-print"
     >
@@ -141,7 +149,9 @@ function Popover({ id, term, entry, triggerRef, panelRef, pos, setPos, onClose }
         </button>
       </div>
 
-      <p className="font-sans text-base font-bold capitalize text-white">{term}</p>
+      <p className={`font-sans text-base font-bold text-white ${entry.titulo ? '' : 'capitalize'}`}>
+        {entry.titulo || term}
+      </p>
       <p className="mt-1.5 text-sm leading-relaxed text-paper-warm">{entry.def}</p>
 
       {entry.ejemplo && (
