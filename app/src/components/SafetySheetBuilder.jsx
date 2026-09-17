@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useStudent, CONNECTOR_LIST, countConnectors } from '../context/StudentContext';
 import { SPECIALTIES_DATA } from '../data/curriculumData';
 import { SectionWrapper } from './SectionWrapper';
 import { KeyIdea, Callout, StepHeading } from './Didactics';
-import { Check, AlertTriangle, Lightbulb, BookOpen, HardHat, PenLine, Megaphone, BookMarked } from 'lucide-react';
+import { Check, AlertTriangle, Lightbulb, BookOpen, HardHat, PenLine, Megaphone, BookMarked, Info, ShieldAlert, FileText } from 'lucide-react';
 import { Termino } from './Glosario';
 
 const STARTERS = {
@@ -155,6 +156,14 @@ export function SafetySheetBuilder() {
   const detected = countConnectors(paragraph2);
   const ready = paragraph1.trim().length >= 120 && paragraph2.trim().length >= 120 && detected.length >= 2;
 
+  const [pasteAlert, setPasteAlert] = useState(false);
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    setPasteAlert(true);
+    setTimeout(() => setPasteAlert(false), 6000);
+  };
+
   return (
     <SectionWrapper
       id="safety-sheet"
@@ -175,6 +184,35 @@ export function SafetySheetBuilder() {
         No hay botón de guardar: todo lo que escribas se guarda solo en este
         equipo, a medida que escribes.
       </Callout>
+
+      {/* Guía general de la actividad */}
+      <div className="card mt-6 border-l-4 border-l-inst-blue bg-ok-bg/30 p-5">
+        <div className="mb-2 flex items-center gap-2 font-mono text-label uppercase tracking-label text-inst-blue font-bold">
+          <Info className="h-4 w-4" aria-hidden="true" />
+          ¿Cómo completar tu Ficha de Operación Segura (FOS-01)?
+        </div>
+        <p className="text-sm text-charcoal leading-relaxed">
+          Esta es la evaluación práctica final. Vas a elaborar la ficha técnica oficial que normará el uso seguro de tu máquina (<strong>{mainMachine}</strong>). Para completarla con éxito, realiza estos 4 pasos en orden:
+        </p>
+        <ol className="mt-3 grid grid-cols-1 gap-2.5 text-xs text-charcoal sm:grid-cols-2 lg:grid-cols-4 font-sans">
+          <li className="border border-line bg-paper-pure p-3">
+            <span className="font-mono font-bold text-inst-blue block mb-1">Paso 1: EPP</span>
+            Selecciona únicamente el equipo de protección obligatorio (cuidado con los prohibidos).
+          </li>
+          <li className="border border-line bg-paper-pure p-3">
+            <span className="font-mono font-bold text-inst-blue block mb-1">Paso 2: Párrafo 1</span>
+            Escribe qué EPP te colocas y qué condiciones de seguridad revisas en el puesto antes de encender.
+          </li>
+          <li className="border border-line bg-paper-pure p-3">
+            <span className="font-mono font-bold text-inst-blue block mb-1">Paso 3: Modo verbal</span>
+            Elige si redactarás en Infinitivo (cortar, fijar) o Imperativo (corte, fije).
+          </li>
+          <li className="border border-line bg-paper-pure p-3">
+            <span className="font-mono font-bold text-inst-blue block mb-1">Paso 4: Párrafo 2</span>
+            Describe la operación en 3 fases (inicio, maniobra y cierre seguro) usando al menos 2 conectores.
+          </li>
+        </ol>
+      </div>
 
       {/* --- Paso 1: EPP --- */}
       <section aria-labelledby="epp-title" className="mt-12">
@@ -258,19 +296,64 @@ export function SafetySheetBuilder() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start">
           <div className="card lg:col-span-7">
+            {/* Caja de instrucciones específicas */}
+            <div className="mb-4 border border-line bg-paper-pure p-4">
+              <p className="mb-2 flex items-center gap-2 font-mono text-label font-bold uppercase tracking-label text-inst-blue">
+                <Info className="h-4 w-4 shrink-0" aria-hidden="true" />
+                Instrucciones exactas para redactar este párrafo:
+              </p>
+              <p className="mb-2 text-xs leading-relaxed text-charcoal">
+                Redacta un texto continuo con tus propias palabras (mínimo 120 caracteres) respondiendo a estos 2 puntos clave:
+              </p>
+              <ol className="list-decimal list-inside space-y-1.5 font-sans text-xs leading-relaxed text-charcoal">
+                <li>
+                  <strong className="text-deep-blue">Equipo de protección obligatorio:</strong> Menciona los EPP que seleccionaste en el Paso 1 (por ejemplo: {specialty === 'automotriz' ? 'overol de trabajo, botas punta de acero dieléctricas, gafas de policarbonato y guantes de nitrilo' : 'overol de trabajo, botas con puntera de acero, delantal de cuero, guantes y careta fotosensible'}).
+                </li>
+                <li>
+                  <strong className="text-deep-blue">Inspección del entorno y la máquina:</strong> Explica qué verificas en el área antes de encender o maniobrar ({specialty === 'automotriz' ? 'ausencia de derrames de aceite en el suelo, estado de las zapatas de goma del elevador y cables sin fisuras' : 'piso libre de solventes inflamables, adecuada ventilación y cables del equipo sin fisuras ni empalmes expuestos'}).
+                </li>
+              </ol>
+            </div>
+
             <label htmlFor="parrafo-1" className="mb-2 flex items-center gap-2 font-mono text-label uppercase tracking-label text-mineral">
               <PenLine className="h-3.5 w-3.5" aria-hidden="true" />
-              Tu redacción
+              Tu redacción (escribe directamente con el teclado)
             </label>
             <textarea
               id="parrafo-1"
               rows={6}
               value={paragraph1}
               onChange={(e) => updateSafetySheet({ paragraph1: e.target.value })}
-              aria-describedby="p1-criterios"
-              placeholder="Empieza por el equipo de protección que necesitas y sigue con lo que revisas en el puesto…"
+              onPaste={handlePaste}
+              onDrop={handlePaste}
+              aria-describedby="p1-criterios p1-nota-pegar"
+              placeholder="Ejemplo de inicio: Antes de operar la máquina, el técnico debe colocarse... Luego, se inspecciona el área verificando..."
               className="w-full border border-line bg-paper-card p-4 font-serif text-base leading-relaxed text-charcoal placeholder:text-mineral/70 focus:border-active-blue"
             />
+            <p id="p1-nota-pegar" className="mt-2 flex items-center gap-1.5 font-mono text-[11px] text-danger-ink">
+              <ShieldAlert className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              Pegado de texto desactivado: redacta directamente con el teclado para validar tu evaluación individual.
+            </p>
+            {pasteAlert && (
+              <div
+                role="alert"
+                className="mt-2.5 flex items-start gap-2.5 border-2 border-danger bg-danger-bg p-3 font-sans text-xs text-danger-ink animate-settleIn"
+              >
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-danger" aria-hidden="true" />
+                <div className="flex-1">
+                  <strong className="block font-bold">¡Acción bloqueada! El pegado de texto no está permitido</strong>
+                  <span>Esta actividad evalúa tu redacción técnica individual. Escribe tu procedimiento directamente con el teclado.</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPasteAlert(false)}
+                  className="px-1 font-bold text-danger hover:underline"
+                  aria-label="Cerrar aviso"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
             <div id="p1-criterios" className="mt-2 flex flex-wrap items-center justify-between gap-2">
               <Criteria
                 items={[
@@ -298,6 +381,10 @@ export function SafetySheetBuilder() {
           title="Elige el modo verbal del procedimiento"
           hint="El que elijas aquí es el que tendrás que sostener en todo el párrafo 4."
         />
+
+        <p className="mb-4 max-w-reading text-xs leading-relaxed text-charcoal">
+          <strong>¿Por qué debes elegirlo?</strong> La redacción técnica industrial exige uniformidad gramatical estricta. Si seleccionas <strong>Infinitivo</strong>, todas las acciones de tu procedimiento deben terminar en <em>-ar, -er, -ir</em> (ej. centrar, ajustar, verificar). Si seleccionas <strong>Imperativo</strong>, formularás órdenes directas al operario (ej. centre, ajuste, verifique). <strong>No mezcles ambos modos</strong> dentro de tu procedimiento.
+        </p>
 
         <div role="radiogroup" aria-labelledby="mode-title" className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {[
@@ -338,19 +425,87 @@ export function SafetySheetBuilder() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start">
           <div className="card lg:col-span-7">
+            {/* Recordatorio de modo verbal activo */}
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-line pb-3">
+              <span className="font-mono text-xs uppercase tracking-label text-mineral">Modo verbal elegido en Paso 3:</span>
+              <span className="inline-flex items-center gap-1.5 border border-inst-blue bg-ok-bg px-2.5 py-1 font-mono text-xs font-bold text-inst-blue">
+                {verbalModeChosen === 'infinitivo' ? 'INFINITIVO (verbos en -ar, -er, -ir)' : 'IMPERATIVO (órdenes directas al operario)'}
+              </span>
+            </div>
+
+            {/* Caja de instrucciones específicas */}
+            <div className="mb-4 border border-line bg-paper-pure p-4">
+              <p className="mb-2 flex items-center gap-2 font-mono text-label font-bold uppercase tracking-label text-inst-blue">
+                <Info className="h-4 w-4 shrink-0" aria-hidden="true" />
+                Instrucciones exactas para la secuencia operativa:
+              </p>
+              <p className="mb-2 text-xs leading-relaxed text-charcoal">
+                Describe paso a paso la operación de tu máquina (<strong>{mainMachine}</strong>) estructurada en 3 momentos claros y enlazada con <strong>al menos 2 conectores cronológicos</strong>:
+              </p>
+              <div className="space-y-2 font-sans text-xs leading-relaxed text-charcoal">
+                <div className="flex items-start gap-2">
+                  <span className="shrink-0 font-mono font-bold text-inst-blue">1. Fase de Inicio:</span>
+                  <span>
+                    Comienza con un conector inicial (ej. <em>«Inicialmente»</em> o <em>«En primer lugar»</em>) y explica la preparación ({specialty === 'automotriz' ? 'centrar el vehículo entre las columnas del elevador y ubicar las zapatas en los puntos de apoyo del chasis' : 'interpretar las cotas del plano técnico, cortar los perfiles de acero y fijar las piezas con prensas de banco'}).
+                  </span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="shrink-0 font-mono font-bold text-inst-blue">2. Maniobra Central:</span>
+                  <span>
+                    Continúa con un conector de proceso (ej. <em>«Posteriormente»</em> o <em>«A continuación»</em>) y detalla la acción técnica principal ({specialty === 'automotriz' ? 'accionar el pulsador de ascenso de forma continua hasta la altura de trabajo y asentar sobre las trabas mecánicas de seguridad' : 'graduar la máquina a los parámetros requeridos y depositar el cordón de soldadura continuo manteniendo el arco corto'}).
+                  </span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="shrink-0 font-mono font-bold text-inst-blue">3. Cierre Seguro:</span>
+                  <span>
+                    Finaliza con un conector de cierre (ej. <em>«Finalmente»</em> o <em>«Por último»</em>) y describe la comprobación, limpieza del puesto ({specialty === 'automotriz' ? 'verificar la estabilidad lateral del automotor y registrar la tarea en la bitácora técnica' : 'retirar la escoria o virutas con protección ocular, verificar la tolerancia geométrica con el calibrador y asentar la tarea en la bitácora técnica'}).
+                  </span>
+                </div>
+              </div>
+              <p className="mt-2.5 border-t border-line/60 pt-2 font-mono text-[11px] text-inst-blue">
+                ★ <strong>Regla de oro:</strong> Recuerda mantener de inicio a fin el modo <strong>{verbalModeChosen.toUpperCase()}</strong> ({verbalModeChosen === 'infinitivo' ? 'centrar, cortar, accionar, verificar' : 'centre, corte, accione, verifique'}).
+              </p>
+            </div>
+
             <label htmlFor="parrafo-2" className="mb-2 flex items-center gap-2 font-mono text-label uppercase tracking-label text-mineral">
               <PenLine className="h-3.5 w-3.5" aria-hidden="true" />
-              Tu redacción
+              Tu redacción (escribe directamente con el teclado)
             </label>
             <textarea
               id="parrafo-2"
               rows={7}
               value={paragraph2}
               onChange={(e) => updateSafetySheet({ paragraph2: e.target.value })}
-              aria-describedby="p2-criterios conectores-detectados"
-              placeholder="Describe la maniobra paso a paso, enlazada con conectores cronológicos…"
+              onPaste={handlePaste}
+              onDrop={handlePaste}
+              aria-describedby="p2-criterios conectores-detectados p2-nota-pegar"
+              placeholder="Ejemplo de inicio: Inicialmente, fijar la pieza en la prensa... Posteriormente, accionar la máquina... Finalmente, limpiar el puesto y registrar en la bitácora..."
               className="w-full border border-line bg-paper-card p-4 font-serif text-base leading-relaxed text-charcoal placeholder:text-mineral/70 focus:border-active-blue"
             />
+            <p id="p2-nota-pegar" className="mt-2 flex items-center gap-1.5 font-mono text-[11px] text-danger-ink">
+              <ShieldAlert className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              Pegado de texto desactivado: redacta directamente con el teclado para validar tu evaluación individual.
+            </p>
+            {pasteAlert && (
+              <div
+                role="alert"
+                className="mt-2.5 flex items-start gap-2.5 border-2 border-danger bg-danger-bg p-3 font-sans text-xs text-danger-ink animate-settleIn"
+              >
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-danger" aria-hidden="true" />
+                <div className="flex-1">
+                  <strong className="block font-bold">¡Acción bloqueada! El pegado de texto no está permitido</strong>
+                  <span>Esta actividad evalúa tu redacción técnica individual. Escribe tu procedimiento directamente con el teclado.</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPasteAlert(false)}
+                  className="px-1 font-bold text-danger hover:underline"
+                  aria-label="Cerrar aviso"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
             <div id="p2-criterios" className="mt-2 flex flex-wrap items-center justify-between gap-2">
               <Criteria
                 items={[
@@ -421,6 +576,36 @@ export function SafetySheetBuilder() {
         <strong>un conjunto de órdenes que otra persona podría seguir</strong> sin
         que tú estés al lado para aclarar nada.
       </KeyIdea>
+
+      {/* Notificación flotante de bloqueo de pegado */}
+      {pasteAlert && typeof document !== 'undefined' && createPortal(
+        <aside
+          role="alert"
+          aria-live="assertive"
+          className="fixed bottom-20 right-5 z-[70] flex max-w-md items-start gap-3 border-2 border-danger bg-paper-pure p-4 shadow-2xl animate-settleIn"
+        >
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center bg-danger text-white">
+            <AlertTriangle className="h-5 w-5" aria-hidden="true" />
+          </span>
+          <div className="space-y-1">
+            <p className="font-sans text-sm font-bold text-danger-ink">
+              Acción no permitida: Pegado de texto desactivado
+            </p>
+            <p className="text-xs leading-relaxed text-charcoal">
+              Esta actividad evalúa tu propia redacción técnica. Debes redactar el procedimiento directamente con el teclado.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setPasteAlert(false)}
+            aria-label="Cerrar aviso"
+            className="ml-2 text-mineral hover:text-charcoal text-xs font-mono font-bold"
+          >
+            ✕
+          </button>
+        </aside>,
+        document.body
+      )}
     </SectionWrapper>
   );
 }
