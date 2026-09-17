@@ -1,0 +1,286 @@
+@import './fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    /* El encabezado es pegajoso: sin esto, cada salto de ancla entierra
+       el título del módulo debajo de la barra. */
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: theme('colors.paper.warm');
+    color: theme('colors.charcoal');
+    font-family: theme('fontFamily.sans');
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Las superficies del navegador también son parte del diseño. */
+  ::selection {
+    background-color: theme('colors.active.blue');
+    color: #FFFFFF;
+  }
+
+  :root {
+    caret-color: theme('colors.active.blue');
+    accent-color: theme('colors.active.blue');
+  }
+
+  /* Un solo anillo de foco para toda la aplicación, visible sobre papel
+     y sobre azul profundo. Reemplaza el anillo por defecto del navegador,
+     que sobre #071B33 es prácticamente invisible. */
+  :focus-visible {
+    outline: 2px solid theme('colors.active.blue');
+    outline-offset: 2px;
+    border-radius: 0;
+  }
+
+  .on-deep :focus-visible,
+  .on-deep:focus-visible {
+    outline-color: #FFFFFF;
+  }
+
+  /* Cifras tabulares en todo lo que sea medición, puntaje o código. */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  /* 1. Microetiqueta técnica — especificación literal del manual:
+        DM Mono 12px, mayúsculas, tracking 0.08em, gris mineral,
+        con un punto rojo circular de 6px a la izquierda. */
+  .mono-label {
+    /* items-start + desplazamiento: cuando la etiqueta ocupa dos líneas,
+       el punto debe quedar junto a la primera, no flotando en el medio. */
+    @apply inline-flex items-start gap-2 font-mono text-label font-medium uppercase text-mineral;
+  }
+
+  .mono-label::before {
+    content: '';
+    margin-top: 0.45em;
+    @apply inline-block w-1.5 h-1.5 rounded-full bg-signal-red shrink-0;
+  }
+
+  .mono-label--dark {
+    @apply text-dim;
+  }
+
+  /* Variante sin punto, para etiquetas que ya viven dentro de un bloque
+     marcado (evita sembrar puntos rojos por toda la página). */
+  .mono-label--plain::before {
+    content: none;
+  }
+
+  /* 2. Línea vectorial técnica: regla de 1px rematada por un punto rojo. */
+  .vector-line {
+    @apply relative w-full h-px bg-line;
+  }
+
+  .vector-line::after {
+    content: '';
+    @apply absolute right-0 top-1/2 w-[7px] h-[7px] -translate-y-1/2 rounded-full bg-signal-red;
+  }
+
+  /* 3. Fila editorial. Sustituye a la tarjeta flotante: sin fondo propio,
+        sin sombra, sin radio; solo una regla superior de 1px.
+        El manual lo pide explícitamente ("evitando tarjetas flotantes"). */
+  .row-edit {
+    @apply border-t border-line pt-5 pb-1;
+  }
+
+  /* Superficie real, para lo que sí es un documento o un campo de entrada. */
+  .surface {
+    @apply bg-paper-pure border border-line;
+  }
+
+  .surface-quiet {
+    @apply bg-paper-card border border-line;
+  }
+
+  /* -----------------------------------------------------------------
+     Tarjetas didácticas
+     El manual prohíbe la tarjeta blanca con sombra difusa, no el bloque
+     delimitado. Estas separan la información con una regla de 1px, sin
+     sombra y sin radio, para que el estudiante vea dónde empieza y
+     termina cada idea.
+     ----------------------------------------------------------------- */
+  .card {
+    @apply border border-line bg-paper-pure p-5 sm:p-6;
+  }
+
+  .card-quiet {
+    @apply border border-line bg-paper-card p-5 sm:p-6;
+  }
+
+  .card-deep {
+    @apply on-deep border border-white/20 bg-deep-blue p-5 text-paper-warm sm:p-6;
+  }
+
+  /* Tarjeta pulsable (opciones, modos, EPP). El estado se marca con
+     borde + fondo + etiqueta, nunca solo con color. */
+  .card-pick {
+    @apply flex w-full flex-col border border-line bg-paper-pure p-4 text-left transition-colors hover:border-mineral;
+  }
+
+  .card-pick[aria-checked='true'],
+  .card-pick[aria-pressed='true'] {
+    @apply border-inst-blue bg-ok-bg;
+  }
+
+  /* Cuadro de icono: 40px, cuadrado, sin radio. Ancla visual de cada
+     concepto (codificación dual: palabra + símbolo). */
+  .icon-chip {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center border border-line bg-paper-card text-inst-blue;
+  }
+
+  .icon-chip--deep {
+    @apply border-white/25 bg-white/10 text-white;
+  }
+
+  .icon-chip--danger {
+    @apply border-danger-border bg-danger-bg text-danger-ink;
+  }
+
+  /* Metadato de módulo: duración, puntos, estado. */
+  .meta-pill {
+    @apply inline-flex items-center gap-1.5 border border-line bg-paper-pure px-2.5 py-1 font-mono text-label uppercase tracking-label text-mineral;
+  }
+
+  .meta-pill--done {
+    @apply border-inst-blue bg-ok-bg text-inst-blue;
+  }
+}
+
+@layer utilities {
+  /* La sub-navegación se desplaza en horizontal a propósito;
+     la barra del navegador ahí solo estorba. */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Compensa el encabezado pegajoso en cada destino de ancla. */
+  .anchor-offset {
+    scroll-margin-top: 7.5rem;
+  }
+}
+
+/* Barra de desplazamiento propia, en la paleta de la marca. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #F3F1EA;
+}
+::-webkit-scrollbar-thumb {
+  background: #D7D9D6;
+  border: 2px solid #F3F1EA;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5C636C;
+}
+
+/* ---------------------------------------------------------------
+   Movimiento
+   Un solo momento autorizado (el párrafo que se ensambla en el
+   Módulo 04) más entradas discretas. Todo parte de un estado ya
+   visible, así que si el IntersectionObserver falla o el usuario
+   imprime, el contenido sigue ahí.
+   --------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Impresión
+   El botón del Módulo 06 emite UN documento: la Ficha de Operación
+   Segura. Todo lo demás se oculta. Antes se imprimía el sitio
+   completo (~7 hojas A4) con secciones en blanco.
+   --------------------------------------------------------------- */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm 14mm 12mm;
+  }
+
+  html, body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 10.5pt;
+    line-height: 1.45;
+  }
+
+  /* Ninguna animación puede dejar contenido invisible en el papel. */
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Raíz de impresión: solo la ficha llega al papel. */
+  body * {
+    visibility: hidden;
+  }
+
+  #ficha-imprimible,
+  #ficha-imprimible * {
+    visibility: visible;
+  }
+
+  #ficha-imprimible {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  /* Sin rellenos de color: el tóner no es gratis. */
+  #ficha-imprimible * {
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #000000 !important;
+  }
+
+  #ficha-imprimible .print-keep-ink {
+    color: #000000 !important;
+    border-color: #000000 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-page-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
