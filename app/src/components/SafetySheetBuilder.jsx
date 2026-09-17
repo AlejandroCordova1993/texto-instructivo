@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useStudent, CONNECTOR_LIST, countConnectors } from '../context/StudentContext';
 import { SPECIALTIES_DATA } from '../data/curriculumData';
@@ -6,6 +6,23 @@ import { SectionWrapper } from './SectionWrapper';
 import { KeyIdea, Callout, StepHeading } from './Didactics';
 import { Check, AlertTriangle, Lightbulb, BookOpen, HardHat, PenLine, Megaphone, BookMarked, Info, ShieldAlert, FileText, ListOrdered } from 'lucide-react';
 import { Termino } from './Glosario';
+
+/**
+ * Extrae la subcadena añadida en una mutación de texto para analizar su contenido.
+ */
+function getAddedSubstring(oldStr, newStr) {
+  let start = 0;
+  while (start < oldStr.length && oldStr[start] === newStr[start]) {
+    start++;
+  }
+  let endOld = oldStr.length - 1;
+  let endNew = newStr.length - 1;
+  while (endOld >= start && endNew >= start && oldStr[endOld] === newStr[endNew]) {
+    endOld--;
+    endNew--;
+  }
+  return newStr.slice(start, endNew + 1);
+}
 
 const STARTERS = {
   automotriz: {
@@ -157,12 +174,168 @@ export function SafetySheetBuilder() {
   const ready = paragraph1.trim().length >= 120 && paragraph2.trim().length >= 120 && detected.length >= 2;
 
   const [pasteAlert, setPasteAlert] = useState(false);
+  const pasteTimeoutRef = useRef(null);
+
+  const triggerPasteAlert = () => {
+    setPasteAlert(true);
+    if (pasteTimeoutRef.current) clearTimeout(pasteTimeoutRef.current);
+    pasteTimeoutRef.current = setTimeout(() => setPasteAlert(false), 6000);
+  };
 
   const handlePaste = (e) => {
     e.preventDefault();
-    setPasteAlert(true);
-    setTimeout(() => setPasteAlert(false), 6000);
+    triggerPasteAlert();
   };
+
+  /**
+   * Bloqueo para teclados virtuales móviles (Android Gboard, Samsung Keyboard, etc.).
+   * En celulares Android, el portapapeles del teclado virtual a menudo no emite 'paste',
+   * sino eventos 'beforeinput' con inputType='insertFromPaste' o inserción masiva.
+   */
+  const handleBeforeInput = (e) => {
+    const inputType = e.inputType || e.nativeEvent?.inputType;
+    const data = e.data ?? e.nativeEvent?.data;
+
+    // 1. Detección explícita de cualquier variante de pegado desde portapapeles
+    if (
+      inputType === 'insertFromPaste' ||
+      inputType === 'insertFromPasteAsQuotation' ||
+      inputType === 'insertFromYank' ||
+      inputType === 'insertReplacementText'
+    ) {
+      e.preventDefault();
+      triggerPasteAlert();
+      return;
+    }
+
+    // 2. Detección de texto inyectado en bloque desde el portapapeles del teclado:
+    if (data) {
+      // Inserción de más de 12 caracteres en un solo evento
+      if (data.length > 12) {
+        e.preventDefault();
+        triggerPasteAlert();
+        return;
+      }
+      // Inserción de varias palabras de golpe (más de 5 caracteres con espacios internos o saltos)
+      if (data.length > 5 && (data.trim().includes(' ') || data.includes('\n') || data.includes('\t'))) {
+        e.preventDefault();
+        triggerPasteAlert();
+        return;
+      }
+    }
+  };
+
+  /**
+   * Cortafuegos secundario en onChange:
+   * Si alguna versión de teclado de Android inyecta el portapapeles sin pasar por un beforeinput
+   * cancelable, onChange detecta la inyección masiva o el inputType y revierte inmediatamente el texto.
+   */
+  const handleParagraphChange = (field, e) => {
+    const newVal = e.target.value;
+    const prevVal = field === 'paragraph1' ? paragraph1 : paragraph2;
+    const inputType = e.nativeEvent?.inputType;
+
+    // Si el evento nativo declara pegado
+    if (
+      inputType === 'insertFromPaste' ||
+      inputType === 'insertFromPasteAsQuotation' ||
+      inputType === 'insertFromYank'
+    ) {
+      triggerPasteAlert();
+      return;
+    }
+
+    const delta = newVal.length - prevVal.length;
+
+    // Si se agregaron más de 12 caracteres de golpe (inyección masiva de portapapeles)
+    if (delta > 12) {
+      triggerPasteAlert();
+      return;
+    }
+
+    // Si se agregaron más de 5 caracteres de golpe y contiene espacios internos (varias palabras a la vez)
+    if (delta > 5) {
+      const added = getAddedSubstring(prevVal, newVal);
+      if (added && (added.trim().includes(' ') || added.includes('\n') || added.includes('\t'))) {
+        triggerPasteAlert();
+        return;
+      }
+    }
+
+    updateSafetySheet({ [field]: newVal });
+  };
+
+  const p1Ref = useRef(null);
+  const p2Ref = useRef(null);
+
+  useEffect(() => {
+    const handleNativeBeforeInput = (e) => {
+      const inputType = e.inputType;
+      const data = e.data;
+
+      // 1. Detección explícita de portapapeles móvil / pegado
+      if (
+        inputType === 'insertFromPaste' ||
+        inputType === 'insertFromPasteAsQuotation' ||
+        inputType === 'insertFromYank' ||
+        inputType === 'insertReplacementText'
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        triggerPasteAlert();
+        return;
+      }
+
+      // 2. Detección de inserción en bloque desde el portapapeles de teclados móviles (Gboard, Samsung):
+      if (data) {
+        if (data.length > 12) {
+          e.preventDefault();
+          e.stopPropagation();
+          triggerPasteAlert();
+          return;
+        }
+        if (data.length > 5 && (data.trim().includes(' ') || data.includes('\n') || data.includes('\t'))) {
+          e.preventDefault();
+          e.stopPropagation();
+          triggerPasteAlert();
+          return;
+        }
+      }
+    };
+
+    const handleNativePasteOrDrop = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      triggerPasteAlert();
+    };
+
+    const el1 = p1Ref.current;
+    const el2 = p2Ref.current;
+
+    if (el1) {
+      el1.addEventListener('beforeinput', handleNativeBeforeInput, { passive: false });
+      el1.addEventListener('paste', handleNativePasteOrDrop);
+      el1.addEventListener('drop', handleNativePasteOrDrop);
+    }
+    if (el2) {
+      el2.addEventListener('beforeinput', handleNativeBeforeInput, { passive: false });
+      el2.addEventListener('paste', handleNativePasteOrDrop);
+      el2.addEventListener('drop', handleNativePasteOrDrop);
+    }
+
+    return () => {
+      if (el1) {
+        el1.removeEventListener('beforeinput', handleNativeBeforeInput);
+        el1.removeEventListener('paste', handleNativePasteOrDrop);
+        el1.removeEventListener('drop', handleNativePasteOrDrop);
+      }
+      if (el2) {
+        el2.removeEventListener('beforeinput', handleNativeBeforeInput);
+        el2.removeEventListener('paste', handleNativePasteOrDrop);
+        el2.removeEventListener('drop', handleNativePasteOrDrop);
+      }
+    };
+  }, []);
 
   return (
     <SectionWrapper
@@ -320,10 +493,12 @@ export function SafetySheetBuilder() {
               Tu redacción (escribe directamente con el teclado)
             </label>
             <textarea
+              ref={p1Ref}
               id="parrafo-1"
               rows={6}
               value={paragraph1}
-              onChange={(e) => updateSafetySheet({ paragraph1: e.target.value })}
+              onChange={(e) => handleParagraphChange('paragraph1', e)}
+              onBeforeInput={handleBeforeInput}
               onPaste={handlePaste}
               onDrop={handlePaste}
               aria-describedby="p1-criterios p1-nota-pegar"
@@ -332,7 +507,7 @@ export function SafetySheetBuilder() {
             />
             <p id="p1-nota-pegar" className="mt-2 flex items-center gap-1.5 font-mono text-[11px] text-danger-ink">
               <ShieldAlert className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              Pegado de texto desactivado: redacta directamente con el teclado para validar tu evaluación individual.
+              Pegado de texto y portapapeles desactivados (incluido teclado de celular): redacta directamente con el teclado para validar tu evaluación individual.
             </p>
             {pasteAlert && (
               <div
@@ -341,8 +516,8 @@ export function SafetySheetBuilder() {
               >
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-danger" aria-hidden="true" />
                 <div className="flex-1">
-                  <strong className="block font-bold">¡Acción bloqueada! El pegado de texto no está permitido</strong>
-                  <span>Esta actividad evalúa tu redacción técnica individual. Escribe tu procedimiento directamente con el teclado.</span>
+                  <strong className="block font-bold">¡Acción bloqueada! El pegado o inserción desde el portapapeles no está permitido</strong>
+                  <span>Esta actividad evalúa tu redacción técnica individual. Escribe tu procedimiento directamente pulsando las teclas (el portapapeles del celular o del teclado está bloqueado).</span>
                 </div>
                 <button
                   type="button"
@@ -484,10 +659,12 @@ export function SafetySheetBuilder() {
               Tu redacción (escribe directamente con el teclado)
             </label>
             <textarea
+              ref={p2Ref}
               id="parrafo-2"
               rows={7}
               value={paragraph2}
-              onChange={(e) => updateSafetySheet({ paragraph2: e.target.value })}
+              onChange={(e) => handleParagraphChange('paragraph2', e)}
+              onBeforeInput={handleBeforeInput}
               onPaste={handlePaste}
               onDrop={handlePaste}
               aria-describedby="p2-criterios conectores-detectados p2-nota-pegar"
@@ -496,7 +673,7 @@ export function SafetySheetBuilder() {
             />
             <p id="p2-nota-pegar" className="mt-2 flex items-center gap-1.5 font-mono text-[11px] text-danger-ink">
               <ShieldAlert className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              Pegado de texto desactivado: redacta directamente con el teclado para validar tu evaluación individual.
+              Pegado de texto y portapapeles desactivados (incluido teclado de celular): redacta directamente con el teclado para validar tu evaluación individual.
             </p>
             {pasteAlert && (
               <div
@@ -505,8 +682,8 @@ export function SafetySheetBuilder() {
               >
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-danger" aria-hidden="true" />
                 <div className="flex-1">
-                  <strong className="block font-bold">¡Acción bloqueada! El pegado de texto no está permitido</strong>
-                  <span>Esta actividad evalúa tu redacción técnica individual. Escribe tu procedimiento directamente con el teclado.</span>
+                  <strong className="block font-bold">¡Acción bloqueada! El pegado o inserción desde el portapapeles no está permitido</strong>
+                  <span>Esta actividad evalúa tu redacción técnica individual. Escribe tu procedimiento directamente pulsando las teclas (el portapapeles del celular o del teclado está bloqueado).</span>
                 </div>
                 <button
                   type="button"
@@ -589,22 +766,22 @@ export function SafetySheetBuilder() {
         que tú estés al lado para aclarar nada.
       </KeyIdea>
 
-      {/* Notificación flotante de bloqueo de pegado */}
+      {/* Notificación flotante de bloqueo de pegado y portapapeles móvil */}
       {pasteAlert && typeof document !== 'undefined' && createPortal(
         <aside
           role="alert"
           aria-live="assertive"
-          className="fixed bottom-20 right-5 z-[70] flex max-w-md items-start gap-3 border-2 border-danger bg-paper-pure p-4 shadow-2xl animate-settleIn"
+          className="fixed bottom-20 left-4 right-4 sm:left-auto sm:right-5 sm:max-w-md z-[70] flex items-start gap-3 border-2 border-danger bg-paper-pure p-4 shadow-2xl animate-settleIn"
         >
           <span className="flex h-8 w-8 shrink-0 items-center justify-center bg-danger text-white">
             <AlertTriangle className="h-5 w-5" aria-hidden="true" />
           </span>
           <div className="space-y-1">
             <p className="font-sans text-sm font-bold text-danger-ink">
-              Acción no permitida: Pegado de texto desactivado
+              Acción bloqueada: Portapapeles y pegado desactivados
             </p>
             <p className="text-xs leading-relaxed text-charcoal">
-              Esta actividad evalúa tu propia redacción técnica. Debes redactar el procedimiento directamente con el teclado.
+              Esta actividad evalúa tu propia redacción técnica. Debes redactar el procedimiento directamente con el teclado (el portapapeles del celular o del teclado está bloqueado).
             </p>
           </div>
           <button
