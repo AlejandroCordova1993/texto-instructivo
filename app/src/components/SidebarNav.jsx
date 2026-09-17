@@ -115,7 +115,7 @@ export function SidebarNav({ isOpen, onToggle }) {
         <div className="border-b border-white/15 px-5 py-4">
           <div className="flex items-center justify-between gap-2">
             <span className="mono-label mono-label--dark text-[0.68rem] tracking-wider text-dim">
-              UEF Central Técnico
+              Bachillerato Técnico
             </span>
             <button
               type="button"

@@ -7,8 +7,7 @@ const STORAGE_KEY = 'taller_texto_instructivo_v3';
 // avance huérfano en los equipos del laboratorio.
 const LEGACY_KEYS = [
   'taller_texto_instructivo_v2',
-  'central_tecnico_instructivo_v2',
-  'central_tecnico_instructivo_v1',
+  'taller_texto_instructivo_v1',
 ];
 
 const SPECIALTY_IDS = ['automotriz', 'industrial'];
