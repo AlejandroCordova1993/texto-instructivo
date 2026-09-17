@@ -9,7 +9,7 @@ import { SequenceConnectors } from './components/SequenceConnectors';
 import { SafetySheetBuilder } from './components/SafetySheetBuilder';
 import { ResultsSummary } from './components/ResultsSummary';
 import { SPECIALTIES_DATA } from './data/curriculumData';
-import { Siren, SearchCheck, Type, ListOrdered, FileSignature, Award, Check, ArrowRight, PanelLeft } from 'lucide-react';
+import { Siren, SearchCheck, Type, ListOrdered, FileSignature, Award, Check, ArrowRight, PanelLeft, ArrowLeft } from 'lucide-react';
 
 const ROUTE = [
   { id: 'intro', step: '01', Icon: Siren, title: 'El impacto', goal: 'Ves qué pasa cuando una orden admite dos lecturas.' },
@@ -44,18 +44,30 @@ function Workshop() {
         Saltar al contenido
       </a>
 
-      {/* Botón flotante para abrir el sidebar cuando esté oculto o en móvil */}
-      <button
-        type="button"
-        onClick={() => setSidebarOpen(true)}
-        aria-label="Mostrar menú del taller"
-        className={`fixed left-4 top-4 z-40 items-center gap-2 border border-white/20 bg-deep-blue/95 px-3 py-2 text-xs font-semibold text-white shadow-xl backdrop-blur-sm transition-all hover:bg-inst-blue hover:border-white/40 no-print ${
+      {/* Botones flotantes para abrir sidebar o volver a recursos cuando esté oculto */}
+      <div
+        className={`fixed left-4 top-4 z-40 items-center gap-2 no-print ${
           sidebarOpen ? 'hidden' : 'flex'
         }`}
       >
-        <PanelLeft className="h-4 w-4" aria-hidden="true" />
-        <span className="hidden sm:inline">Índice del taller</span>
-      </button>
+        <a
+          href="../../recursos.html"
+          aria-label="Volver al catálogo de recursos"
+          className="inline-flex items-center gap-1.5 border border-white/20 bg-deep-blue/95 px-3 py-2 text-xs font-semibold text-white shadow-xl backdrop-blur-sm transition-all hover:bg-inst-blue hover:border-white/40"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          <span className="hidden sm:inline">Recursos</span>
+        </a>
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Mostrar menú del taller"
+          className="inline-flex items-center gap-2 border border-white/20 bg-deep-blue/95 px-3 py-2 text-xs font-semibold text-white shadow-xl backdrop-blur-sm transition-all hover:bg-inst-blue hover:border-white/40"
+        >
+          <PanelLeft className="h-4 w-4" aria-hidden="true" />
+          <span className="hidden sm:inline">Índice del taller</span>
+        </button>
+      </div>
 
       {/* Barra lateral izquierda */}
       <SidebarNav isOpen={sidebarOpen} onToggle={setSidebarOpen} />

@@ -10,6 +10,7 @@ import {
   Check,
   PanelLeftClose,
   ChevronRight,
+  ArrowLeft,
 } from 'lucide-react';
 
 export const MODULES = [
@@ -113,21 +114,31 @@ export function SidebarNav({ isOpen, onToggle }) {
       >
         {/* Cabecera institucional del Sidebar */}
         <div className="border-b border-white/15 px-5 py-4">
-          <div className="flex items-center justify-between gap-2">
-            <span className="mono-label mono-label--dark text-[0.68rem] tracking-wider text-dim">
-              Bachillerato Técnico
-            </span>
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <a
+              href="../../recursos.html"
+              className="inline-flex items-center gap-1.5 border border-white/20 bg-white/5 px-2.5 py-1 font-mono text-xs text-paper-warm transition-colors hover:border-white/40 hover:bg-white/15 hover:text-white"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+              <span>Volver a recursos</span>
+            </a>
             <button
               type="button"
               onClick={() => onToggle(false)}
               aria-label="Ocultar barra lateral"
-              className="inline-flex h-8 w-8 items-center justify-center border border-white/20 bg-white/5 text-dim transition-colors hover:border-white/40 hover:bg-white/15 hover:text-white"
+              className="inline-flex h-7 w-7 items-center justify-center border border-white/20 bg-white/5 text-dim transition-colors hover:border-white/40 hover:bg-white/15 hover:text-white"
             >
-              <PanelLeftClose className="h-4 w-4" aria-hidden="true" />
+              <PanelLeftClose className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
           </div>
 
-          <h1 className="mt-2 font-sans text-lg font-bold leading-tight tracking-tight text-white">
+          <div className="flex items-center justify-between gap-2">
+            <span className="mono-label mono-label--dark text-[0.68rem] tracking-wider text-dim">
+              Bachillerato Técnico
+            </span>
+          </div>
+
+          <h1 className="mt-1.5 font-sans text-lg font-bold leading-tight tracking-tight text-white">
             Taller de Texto Instructivo
           </h1>
           <p className="mt-0.5 font-mono text-[0.7rem] text-dim">
