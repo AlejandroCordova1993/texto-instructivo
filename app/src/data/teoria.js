@@ -154,12 +154,18 @@ export const TEORIA = {
           ['Cierre / verificación', 'Finaliza la tarea y ordena el puesto', 'Finalmente, por último, al concluir la operación'],
         ],
       },
+      {
+        tipo: 'concepto',
+        titulo: '¿Conectores o numeración (1, 2, 3...)?',
+        texto: 'En los textos instructivos técnicos existen dos maneras estándar de ordenar los pasos: 1) Listas numeradas (1, 2, 3...) o viñetas, habituales en checklists, hojas SOP y manuales de fabricante; y 2) Párrafo continuo con conectores cronológicos (inicialmente, posteriormente, finalmente), propio de especificaciones e informes formales. Ambos métodos son válidos y complementarios.',
+      },
     ],
     resumen: [
       'Inicio: inicialmente, en primer lugar, antes de operar.',
       'Desarrollo: a continuación, posteriormente, seguidamente, luego.',
       'Cierre: finalmente, por último, al concluir la operación.',
       'El conector marca la fase; por eso «finalmente» no va en el paso dos.',
+      'El orden puede señalarse con conectores o con números (1, 2, 3...): ambos son válidos en el taller.',
     ],
   },
 

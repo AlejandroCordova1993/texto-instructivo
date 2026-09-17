@@ -116,9 +116,8 @@ export function SequenceConnectors() {
 
       {/* Cabecera del paso */}
       <StepHeading
-        number="1"
         title={sequenceActivity.title}
-        hint="Ordena los pasos cronológicamente con las flechas. Observa a la derecha cómo se ensambla el texto continuo."
+        hint="Ordena los pasos cronológicamente con las flechas. Observa a la derecha cómo se ensambla el texto continuo (esta actividad califica hasta 2.0 puntos)."
         trailing={
           <button
             type="button"
@@ -198,9 +197,14 @@ export function SequenceConnectors() {
                 Comprobar orden
               </button>
             ) : (
-              <div className="inline-flex items-center gap-2 border border-inst-blue bg-ok-bg px-4 py-2 font-sans text-xs font-bold text-inst-blue">
-                <Check className="h-4 w-4" aria-hidden="true" />
-                ¡Secuencia cronológica verificada!
+              <div className="flex flex-wrap items-center gap-2 border border-inst-blue bg-ok-bg px-4 py-2 font-sans text-xs font-bold text-inst-blue">
+                <Check className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>¡Secuencia cronológica verificada! Calificación: {(progress.scores?.sequence ?? (progress.sequenceChecks <= 1 ? 2 : progress.sequenceChecks === 2 ? 1 : 0.5)).toFixed(1)} / 2.0 pts</span>
+                {progress.sequenceChecks > 1 && (
+                  <span className="font-mono font-normal text-mineral">
+                    ({progress.sequenceChecks === 2 ? 'acertado al 2.° intento = 1.0 pt' : `acertado al ${progress.sequenceChecks}.° intento = 0.5 pts`})
+                  </span>
+                )}
               </div>
             )}
 
@@ -275,14 +279,22 @@ export function SequenceConnectors() {
           </div>
 
           {/* Tarjeta: Lo que acabas de aprender */}
-          <div className="border border-active-blue/30 bg-active-blue/5 p-4">
-            <p className="mb-1.5 flex items-center gap-1.5 font-sans text-xs font-bold text-deep-blue">
+          <div className="border border-active-blue/30 bg-active-blue/5 p-4 space-y-2.5">
+            <p className="flex items-center gap-1.5 font-sans text-xs font-bold text-deep-blue">
               <Lightbulb className="h-4 w-4 text-active-blue" aria-hidden="true" />
               Lo que acabas de aprender
             </p>
             <p className="text-xs leading-relaxed text-charcoal">
               El <Termino term="conector cronológico">conector cronológico</Termino> no es un adorno: <strong>marca en qué fase del trabajo estás</strong> (inicio, desarrollo o cierre). Por eso «finalmente» no puede aparecer en el paso dos.
             </p>
+            <div className="border-t border-active-blue/20 pt-2 text-xs leading-relaxed text-charcoal">
+              <p className="font-bold text-deep-blue mb-1">
+                ¿Conectores o numeración (1, 2, 3...)?
+              </p>
+              <p className="text-[11.5px] text-charcoal/90">
+                En el taller técnico también es muy común señalar el orden con <strong>números (1, 2, 3...)</strong> o viñetas en checklists y manuales de fabricante. Ambos recursos (conectores temporales o listas numeradas) son válidos y complementarios para garantizar que el operario no altere el orden crítico.
+              </p>
+            </div>
           </div>
         </div>
       </div>

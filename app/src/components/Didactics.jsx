@@ -108,12 +108,14 @@ export function StepHeading({ number, title, hint, id, trailing }) {
   return (
     <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
       <div className="flex items-start gap-3">
-        <span
-          aria-hidden="true"
-          className="flex h-9 w-9 shrink-0 items-center justify-center border border-inst-blue bg-inst-blue font-mono text-sm font-bold text-white"
-        >
-          {number}
-        </span>
+        {number && (
+          <span
+            aria-hidden="true"
+            className="flex h-9 w-9 shrink-0 items-center justify-center border border-inst-blue bg-inst-blue font-mono text-sm font-bold text-white"
+          >
+            {number}
+          </span>
+        )}
         <div>
           <h3 id={id} className="font-sans text-xl font-bold text-deep-blue">{title}</h3>
           {hint && <p className="mt-1 max-w-reading text-sm text-mineral">{hint}</p>}

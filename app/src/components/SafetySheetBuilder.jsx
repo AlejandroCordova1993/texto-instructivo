@@ -4,7 +4,7 @@ import { useStudent, CONNECTOR_LIST, countConnectors } from '../context/StudentC
 import { SPECIALTIES_DATA } from '../data/curriculumData';
 import { SectionWrapper } from './SectionWrapper';
 import { KeyIdea, Callout, StepHeading } from './Didactics';
-import { Check, AlertTriangle, Lightbulb, BookOpen, HardHat, PenLine, Megaphone, BookMarked, Info, ShieldAlert, FileText } from 'lucide-react';
+import { Check, AlertTriangle, Lightbulb, BookOpen, HardHat, PenLine, Megaphone, BookMarked, Info, ShieldAlert, FileText, ListOrdered } from 'lucide-react';
 import { Termino } from './Glosario';
 
 const STARTERS = {
@@ -209,7 +209,7 @@ export function SafetySheetBuilder() {
           </li>
           <li className="border border-line bg-paper-pure p-3">
             <span className="font-mono font-bold text-inst-blue block mb-1">Paso 4: Párrafo 2</span>
-            Describe la operación en 3 fases (inicio, maniobra y cierre seguro) usando al menos 2 conectores.
+            Describe la operación en 3 fases usando conectores o numerando pasos (1, 2, 3...), con al menos 2 conectores de orden.
           </li>
         </ol>
       </div>
@@ -462,6 +462,18 @@ export function SafetySheetBuilder() {
                   </span>
                 </div>
               </div>
+
+              {/* Nota pedagógica sobre numeración (1, 2, 3...) vs conectores */}
+              <div className="mt-3 border-t border-line/60 pt-2.5">
+                <p className="font-mono text-xs font-bold uppercase tracking-label text-deep-blue flex items-center gap-1.5">
+                  <ListOrdered className="h-3.5 w-3.5 text-inst-blue shrink-0" aria-hidden="true" />
+                  ¿Conectores o numeración (1, 2, 3...)?
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-charcoal">
+                  En los textos instructivos de taller, el orden se puede señalar tanto con <strong>numeración directa (1, 2, 3...)</strong> como mediante <strong>conectores cronológicos (Inicialmente... Posteriormente... Finalmente...)</strong> en párrafo continuo. Ambos métodos son válidos en la industria. En esta actividad puedes redactar en bloque o numerar tus oraciones (ej. <em>«1. Inicialmente, fijar... 2. Posteriormente, accionar... 3. Finalmente, desconectar...»</em>), asegurándote de incorporar al menos 2 conectores de orden.
+                </p>
+              </div>
+
               <p className="mt-2.5 border-t border-line/60 pt-2 font-mono text-[11px] text-inst-blue">
                 ★ <strong>Regla de oro:</strong> Recuerda mantener de inicio a fin el modo <strong>{verbalModeChosen.toUpperCase()}</strong> ({verbalModeChosen === 'infinitivo' ? 'centrar, cortar, accionar, verificar' : 'centre, corte, accione, verifique'}).
               </p>
@@ -479,7 +491,7 @@ export function SafetySheetBuilder() {
               onPaste={handlePaste}
               onDrop={handlePaste}
               aria-describedby="p2-criterios conectores-detectados p2-nota-pegar"
-              placeholder="Ejemplo de inicio: Inicialmente, fijar la pieza en la prensa... Posteriormente, accionar la máquina... Finalmente, limpiar el puesto y registrar en la bitácora..."
+              placeholder="Ejemplo: Inicialmente, fijar la pieza... Posteriormente, accionar la máquina... Finalmente, limpiar y registrar... (También puedes numerar: 1. Inicialmente... 2. Posteriormente... 3. Finalmente...)"
               className="w-full border border-line bg-paper-card p-4 font-serif text-base leading-relaxed text-charcoal placeholder:text-mineral/70 focus:border-active-blue"
             />
             <p id="p2-nota-pegar" className="mt-2 flex items-center gap-1.5 font-mono text-[11px] text-danger-ink">
