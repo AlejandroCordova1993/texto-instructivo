@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { BookOpen, X, ArrowUp, GraduationCap } from 'lucide-react';
+import { BookOpen, X, ArrowUp } from 'lucide-react';
 import { teoriaDe } from '../data/teoria';
 import { Termino } from './Glosario';
 
@@ -18,7 +18,7 @@ import { Termino } from './Glosario';
 function Concepto({ titulo, texto }) {
   return (
     <div className="border-t border-line pt-5">
-      <h4 className="font-sans text-base font-bold text-deep-blue">{titulo}</h4>
+      <h3 className="font-sans text-base font-bold text-deep-blue">{titulo}</h3>
       <p className="mt-2 max-w-reading text-base leading-relaxed text-charcoal">{texto}</p>
     </div>
   );
@@ -27,7 +27,7 @@ function Concepto({ titulo, texto }) {
 function ListaConceptos({ titulo, items }) {
   return (
     <div className="border-t border-line pt-5">
-      <h4 className="mb-4 font-sans text-base font-bold text-deep-blue">{titulo}</h4>
+      <h3 className="mb-4 font-sans text-base font-bold text-deep-blue">{titulo}</h3>
       <dl className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {items.map(({ term, def, ejemplo }) => (
           <div key={term} className="card-quiet">
@@ -52,7 +52,7 @@ function ListaConceptos({ titulo, items }) {
 function Tabla({ titulo, nota, encabezados, filas }) {
   return (
     <div className="border-t border-line pt-5">
-      <h4 className="font-sans text-base font-bold text-deep-blue">{titulo}</h4>
+      <h3 className="font-sans text-base font-bold text-deep-blue">{titulo}</h3>
       {nota && <p className="mt-2 max-w-reading text-base leading-relaxed text-charcoal">{nota}</p>}
 
       {/* Escritorio: tabla. Móvil: tarjetas apiladas, nunca scroll lateral. */}
@@ -106,7 +106,7 @@ function Tabla({ titulo, nota, encabezados, filas }) {
 function Formula({ titulo, pasos }) {
   return (
     <div className="border-t border-line pt-5">
-      <h4 className="mb-4 font-sans text-base font-bold text-deep-blue">{titulo}</h4>
+      <h3 className="mb-4 font-sans text-base font-bold text-deep-blue">{titulo}</h3>
       <ol className="flex flex-wrap items-stretch gap-2">
         {pasos.map((paso, i) => (
           <li key={paso} className="flex items-center gap-2">
@@ -129,17 +129,17 @@ export function TeoriaSection({ moduleId }) {
   if (!teoria) return null;
 
   return (
-    <section id={`teoria-${moduleId}`} aria-labelledby={`teoria-${moduleId}-titulo`} className="anchor-offset mb-16">
+    <section id={`teoria-${moduleId}`} aria-labelledby={`teoria-${moduleId}-titulo`} className="anchor-offset mt-8 w-full border-b border-b-ok-border border-t-2 border-t-inst-blue bg-ok-bg px-4 py-6 sm:px-6 sm:py-8">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div className="flex items-start gap-3">
           <span className="icon-chip">
-            <GraduationCap className="h-5 w-5" aria-hidden="true" />
+            <BookOpen className="h-5 w-5" aria-hidden="true" />
           </span>
           <div>
             <p className="mono-label mono-label--plain mb-1">La teoría</p>
-            <h3 id={`teoria-${moduleId}-titulo`} className="font-sans text-xl font-bold text-deep-blue">
+            <h2 id={`teoria-${moduleId}-titulo`} className="font-sans text-xl font-bold text-deep-blue">
               {teoria.titulo}
-            </h3>
+            </h2>
           </div>
         </div>
         {teoria.dcd && (

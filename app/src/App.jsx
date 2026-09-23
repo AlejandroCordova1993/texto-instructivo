@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ArrowLeft, ArrowRight, Menu } from 'lucide-react';
 import { StudentProvider, useStudent } from './context/StudentContext';
 import { SidebarNav } from './components/SidebarNav';
 import { SpecialtyPicker } from './components/SpecialtyPicker';
@@ -9,155 +10,105 @@ import { SequenceConnectors } from './components/SequenceConnectors';
 import { SafetySheetBuilder } from './components/SafetySheetBuilder';
 import { ResultsSummary } from './components/ResultsSummary';
 import { SPECIALTIES_DATA } from './data/curriculumData';
-import { Siren, SearchCheck, Type, ListOrdered, FileSignature, Award, Check, ArrowRight, PanelLeft, ArrowLeft } from 'lucide-react';
+import { STAGES } from './lib/workshop';
 
-const ROUTE = [
-  { id: 'intro', step: '01', Icon: Siren, title: 'El impacto', goal: 'Ves qué pasa cuando una orden admite dos lecturas.' },
-  { id: 'forensic', step: '02', Icon: SearchCheck, title: 'Lab forense', goal: 'Cazas los tres vicios y cambias las palabras comodín.' },
-  { id: 'verbal', step: '03', Icon: Type, title: 'Modos verbales', goal: 'Eliges imperativo o infinitivo y lo sostienes.' },
-  { id: 'sequence', step: '04', Icon: ListOrdered, title: 'Secuencia', goal: 'Ordenas un procedimiento y lo unes con conectores.' },
-  { id: 'safety-sheet', step: '05', Icon: FileSignature, title: 'Tu ficha', goal: 'Redactas los dos párrafos de tu documento.' },
-  { id: 'results', step: '06', Icon: Award, title: 'Tu resultado', goal: 'Revisas tu desempeño e imprimes la ficha.' },
-];
+const STAGE_COMPONENTS = {
+  intro: IntroSection,
+  forensic: ForensicLab,
+  verbal: VerbalModes,
+  sequence: SequenceConnectors,
+  'safety-sheet': SafetySheetBuilder,
+  results: ResultsSummary,
+};
+
+function stageFromHash() {
+  const id = window.location.hash.slice(1);
+  return STAGES.some((stage) => stage.id === id) ? id : STAGES[0].id;
+}
 
 function Workshop() {
-  const { specialty, registerMeta, moduleStatus } = useStudent();
+  const { specialty, registerMeta, scores } = useStudent();
   const specialtyData = SPECIALTIES_DATA[specialty] || SPECIALTIES_DATA.automotriz;
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [activeId, setActiveId] = useState(stageFromHash);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 1024);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  /* El cálculo del puntaje necesita saber cuántos ítems tiene la
-   * especialidad activa y qué EPP son trampa. */
   useEffect(() => {
     registerMeta({
       antiComodinCount: specialtyData.antiComodin.length,
-      requiredEpp: specialtyData.safetyEquipments.filter((e) => e.required).map((e) => e.id),
-      trapEpp: specialtyData.safetyEquipments.filter((e) => !e.required).map((e) => e.id),
+      requiredEpp: specialtyData.safetyEquipments.filter((item) => item.required).map((item) => item.id),
+      trapEpp: specialtyData.safetyEquipments.filter((item) => !item.required).map((item) => item.id),
     });
   }, [specialtyData, registerMeta]);
 
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  useEffect(() => {
+    const onLocationChange = () => {
+      const id = window.location.hash.slice(1);
+      if (STAGES.some((stage) => stage.id === id)) setActiveId(id);
+    };
+    window.addEventListener('hashchange', onLocationChange);
+    window.addEventListener('popstate', onLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', onLocationChange);
+      window.removeEventListener('popstate', onLocationChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [activeId]);
+
+  const navigate = useCallback((id) => {
+    if (!STAGES.some((stage) => stage.id === id)) return;
+    setActiveId(id);
+    window.history.pushState(null, '', `#${id}`);
+    setMenuOpen(false);
+  }, []);
+
+  const index = Math.max(0, STAGES.findIndex((stage) => stage.id === activeId));
+  const stage = STAGES[index];
+  const StageComponent = STAGE_COMPONENTS[stage.id];
+
   return (
-    <div className="min-h-screen bg-paper-warm text-charcoal print:pl-0">
-      <a
-        href="#intro"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:bg-deep-blue focus:px-4 focus:py-3 focus:text-sm focus:font-bold focus:text-white"
-      >
+    <div className="min-h-screen bg-paper-warm text-charcoal">
+      <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:bg-deep-blue focus:px-4 focus:py-3 focus:text-white">
         Saltar al contenido
       </a>
-
-      {/* Botones flotantes para abrir sidebar o volver a recursos cuando esté oculto */}
-      <div
-        className={`fixed left-4 top-4 z-40 items-center gap-2 no-print ${
-          sidebarOpen ? 'hidden' : 'flex'
-        }`}
-      >
-        <a
-          href="../../recursos.html"
-          aria-label="Volver al catálogo de recursos"
-          className="inline-flex items-center gap-1.5 border border-white/20 bg-deep-blue/95 px-3 py-2 text-xs font-semibold text-white shadow-xl backdrop-blur-sm transition-all hover:bg-inst-blue hover:border-white/40"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          <span className="hidden sm:inline">Recursos</span>
-        </a>
-        <button
-          type="button"
-          onClick={() => setSidebarOpen(true)}
-          aria-label="Mostrar menú del taller"
-          className="inline-flex items-center gap-2 border border-white/20 bg-deep-blue/95 px-3 py-2 text-xs font-semibold text-white shadow-xl backdrop-blur-sm transition-all hover:bg-inst-blue hover:border-white/40"
-        >
-          <PanelLeft className="h-4 w-4" aria-hidden="true" />
-          <span className="hidden sm:inline">Índice del taller</span>
-        </button>
-      </div>
-
-      {/* Barra lateral izquierda */}
-      <SidebarNav isOpen={sidebarOpen} onToggle={setSidebarOpen} />
-
-      {/* Contenedor principal con margen izquierdo dinámico */}
-      <div
-        className={`flex min-h-screen flex-col transition-[padding] duration-300 ease-in-out print:pl-0 ${
-          sidebarOpen ? 'lg:pl-[280px]' : 'pl-0'
-        }`}
-      >
-
-      {/* Portada: la ruta completa, visible antes de empezar. Saber cuántas
-          paradas tiene el camino baja la carga de entrar en la primera. */}
-      <section className="on-deep border-b border-white/15 bg-deep-blue px-4 py-14 text-paper-warm sm:px-6 sm:py-16 lg:px-8 no-print">
-        <div className="mx-auto max-w-brand">
-          <p className="mono-label mono-label--dark mb-5">
-            Tu taller · {specialtyData.name}
-          </p>
-
-          <h1 className="max-w-3xl font-sans text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
-            El texto instructivo en el taller técnico
-          </h1>
-
-          <p className="mt-5 max-w-reading font-serif text-lg italic leading-relaxed text-dim">
-            Seis paradas, unos cuarenta minutos, y al final un documento firmado
-            por ti. Trabajarás sobre {specialtyData.mainMachine.toLowerCase()}.
-          </p>
-
-          <ol className="mt-10 grid grid-cols-1 gap-px border border-white/15 bg-white/15 sm:grid-cols-2 lg:grid-cols-3">
-            {ROUTE.map(({ id, step, Icon, title, goal }) => {
-              const isDone = moduleStatus[id] === 'done';
-              return (
-                <li key={id} className="bg-deep-blue">
-                  <a
-                    href={`#${id}`}
-                    className="group flex h-full gap-4 p-5 transition-colors hover:bg-white/5"
-                  >
-                    <span
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center border ${
-                        isDone ? 'border-inst-blue bg-inst-blue text-white' : 'border-white/25 bg-white/10 text-white'
-                      }`}
-                    >
-                      {isDone
-                        ? <Check className="h-5 w-5" aria-hidden="true" />
-                        : <Icon className="h-5 w-5" aria-hidden="true" />}
-                    </span>
-                    <span className="min-w-0">
-                      <span className="flex items-center gap-2">
-                        <span className="font-mono text-label text-dim">{step}</span>
-                        <span className="font-sans text-base font-bold text-white">{title}</span>
-                        <ArrowRight
-                          className="h-4 w-4 shrink-0 text-dim opacity-0 transition-opacity group-hover:opacity-100"
-                          aria-hidden="true"
-                        />
-                      </span>
-                      <span className="mt-1 block text-sm leading-relaxed text-dim">{goal}</span>
-                      {isDone && <span className="sr-only"> (completado)</span>}
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ol>
+      <SidebarNav activeId={stage.id} isOpen={!isMobile || menuOpen} onToggle={setMenuOpen} onNavigate={navigate} />
+      <div className="lg:pl-[280px] print:pl-0">
+        <div className="sticky top-0 z-30 flex min-h-[4.25rem] items-center justify-between gap-3 border-b border-line bg-paper-card px-4 lg:hidden no-print">
+          <button type="button" onClick={() => setMenuOpen(true)} aria-label="Abrir etapas del taller" aria-expanded={menuOpen} aria-controls="courseSidebar" className="inline-flex min-h-11 items-center gap-2 font-sans text-sm font-bold text-deep-blue">
+            <Menu className="h-5 w-5" aria-hidden="true" /> Etapas
+          </button>
+          <p aria-live="polite" className="font-mono text-sm font-bold tabular-nums text-deep-blue">Puntaje {scores.total.toFixed(1)} / 10</p>
         </div>
-      </section>
-
-      <main className="grow">
-        <IntroSection />
-        <ForensicLab />
-        <VerbalModes />
-        <SequenceConnectors />
-        <SafetySheetBuilder />
-        <ResultsSummary />
-      </main>
-
-      <footer className="on-deep border-t border-white/15 bg-deep-blue px-4 py-10 text-paper-warm sm:px-6 lg:px-8 no-print">
-        <div className="mx-auto flex max-w-brand flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="font-sans text-base font-bold text-white">
-              Taller de Texto Instructivo
-            </p>
-            <p className="mt-1 text-sm text-dim">
-              Quito, Ecuador · Área de Lengua y Literatura y Formación Técnica
-            </p>
+        <main id="contenido" tabIndex={-1} className="min-h-screen">
+          <div className="border-b border-line bg-paper-card px-4 py-3 sm:px-6 lg:px-8 no-print">
+            <div className="mx-auto flex max-w-stage flex-wrap items-center justify-between gap-2 text-xs font-semibold uppercase tracking-[.12em] text-muted">
+              <span>Taller de texto instructivo</span>
+              <span>{stage.group} · Etapa {index + 1} de {STAGES.length}</span>
+            </div>
           </div>
-          <p className="text-xs text-dim">
-            Sistema de identidad <em>Human / System</em> — Alejandro Córdova
-          </p>
-        </div>
-      </footer>
+          <StageComponent />
+          <nav aria-label="Avanzar entre etapas" className="mx-auto flex max-w-stage flex-col gap-3 border-t border-line px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-0 no-print">
+            {index > 0 ? (
+              <button type="button" onClick={() => navigate(STAGES[index - 1].id)} className="inline-flex min-h-11 items-center gap-2 text-left text-sm font-bold text-deep-blue hover:underline">
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Anterior: {STAGES[index - 1].label}
+              </button>
+            ) : <span />}
+            {index < STAGES.length - 1 ? (
+              <button type="button" onClick={() => navigate(STAGES[index + 1].id)} className="inline-flex min-h-11 items-center justify-end gap-2 text-right text-sm font-bold text-deep-blue hover:underline">
+                Siguiente: {STAGES[index + 1].label} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+            ) : <p className="max-w-sm text-sm text-muted">Puedes volver a cualquier etapa para mejorar tu trabajo y tu puntaje.</p>}
+          </nav>
+        </main>
       </div>
     </div>
   );
@@ -169,9 +120,5 @@ function AppContent() {
 }
 
 export default function App() {
-  return (
-    <StudentProvider>
-      <AppContent />
-    </StudentProvider>
-  );
+  return <StudentProvider><AppContent /></StudentProvider>;
 }

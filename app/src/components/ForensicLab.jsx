@@ -70,12 +70,12 @@ export function ForensicLab() {
       step="02"
       monoTag="Análisis forense y precisión lingüística"
       title="Caza los vicios que se cuelan en un protocolo"
-      subtitle="Primero ves la diferencia entre un aviso de pared y un protocolo normado. Después la detectas tú solo."
-      objective="Podrás identificar los tres vicios mortales de una instrucción técnica y reemplazar palabras comodín por términos que sí nombran una pieza."
+      subtitle="Compara una instrucción imprecisa con un modelo de redacción más claro. Después, encuentra los errores por tu cuenta."
+      objective="Podrás identificar ambigüedades, contradicciones y datos omitidos, y reemplazar palabras vagas por nombres precisos."
       duration="12 minutos"
       points="4 de los 10 puntos"
       tasks={[
-        'Comparas un aviso informal con un protocolo normado.',
+        'Comparas un aviso informal con un modelo didáctico de redacción.',
         `Diagnosticas ${flawsCases.length} instrucciones defectuosas.`,
         `Normalizas ${antiComodin.length} expresiones de taller.`,
       ]}
@@ -96,7 +96,7 @@ export function ForensicLab() {
         <div id="panel-comparativa" role="tabpanel" aria-labelledby="tab-comparativa" className="animate-settleIn">
           <Callout tone="aviso" title="Lee los dos y busca la diferencia">
             Es el mismo procedimiento escrito dos veces. Uno se pegó en la pared por
-            costumbre; el otro pasó por norma. Fíjate en qué desaparece cuando se
+            costumbre; el otro se reescribió para ser más claro. Fíjate en qué desaparece cuando se
             elimina la suposición.
           </Callout>
 

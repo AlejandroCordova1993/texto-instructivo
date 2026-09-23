@@ -7,7 +7,7 @@ const CAREERS = [
   {
     id: 'automotriz',
     Icon: Wrench,
-    blurb: 'Vas a trabajar sobre un caso real de elevador hidráulico: pernos de culata, zapatas de chasis y circuitos del vehículo.',
+    blurb: 'Usarás ejemplos de elevador hidráulico, pernos de culata y componentes del vehículo.',
   },
   {
     id: 'industrial',
@@ -17,15 +17,15 @@ const CAREERS = [
 ];
 
 const PROMISES = [
-  { Icon: ShieldAlert, text: 'Vas a ver cómo una frase ambigua termina en un accidente de taller.' },
-  { Icon: PenLine, text: 'Vas a aprender a escribir órdenes técnicas que no se malinterpretan.' },
-  { Icon: ListOrdered, text: 'Vas a emitir tu propia Ficha de Operación Segura para entregar.' },
+  { Icon: ShieldAlert, text: 'Primero analizarás instrucciones ambiguas y detectarás errores.' },
+  { Icon: PenLine, text: 'Después practicarás verbos y el orden de los pasos. Estas actividades suman puntos.' },
+  { Icon: ListOrdered, text: 'Al final escribirás tu texto instructivo y revisarás tu puntaje sobre 10.' },
 ];
 
 /* Pantalla de entrada.
  *
  * Ya no se pide nombre ni curso: el estudiante escribe su nombre a mano en
- * la ficha impresa. Lo único que el taller necesita para personalizar el
+ * el texto impreso. Lo único que el taller necesita para personalizar el
  * contenido es la carrera, así que esa es la única decisión de esta pantalla.
  */
 export function SpecialtyPicker() {
@@ -42,8 +42,8 @@ export function SpecialtyPicker() {
         </h1>
 
         <p className="mt-5 max-w-reading font-serif text-lg italic leading-relaxed text-mineral sm:text-xl">
-          Una instrucción mal escrita no es una falta de ortografía: es un dedo
-          aplastado. Aquí aprendes a escribirlas bien.
+          Aprende a escribir instrucciones claras, precisas y ordenadas para un
+          contexto técnico. Verás tu puntaje mientras avanzas y podrás mejorar tu trabajo.
         </p>
 
         <ul className="mt-10 grid grid-cols-1 gap-x-8 gap-y-4 border-y border-line py-7 sm:grid-cols-3">
@@ -62,8 +62,8 @@ export function SpecialtyPicker() {
             ¿En qué taller trabajas?
           </h2>
           <p className="mt-1.5 max-w-reading text-base text-mineral">
-            Todos los ejemplos, casos y ejercicios se adaptan a la carrera que elijas.
-            Puedes cambiarla después sin perder tu avance.
+            Elige los ejemplos que quieres trabajar. Puedes cambiarlos después sin
+            perder el avance de cada especialidad.
           </p>
 
           <div role="radiogroup" aria-labelledby="picker-title" className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -114,7 +114,7 @@ export function SpecialtyPicker() {
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
             </button>
             <p className="text-sm text-mineral">
-              Tu avance se guarda en este equipo. Al final imprimes tu ficha y
+              Tu avance se guarda en este equipo. Al final imprimes tu texto y
               escribes tu nombre a mano.
             </p>
           </div>

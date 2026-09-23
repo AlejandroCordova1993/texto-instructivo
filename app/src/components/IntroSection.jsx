@@ -16,7 +16,7 @@ const GUESSES = [
   {
     key: 'pregunto',
     label: 'El técnico preguntó antes de tocar nada.',
-    reply: 'Ojalá. Pero en un taller con ruido, prisa y un jefe a diez metros, casi nadie pregunta: cada quien resuelve con su propio criterio. Y ahí empieza el problema.',
+    reply: 'Preguntar sería una buena decisión. El problema del ejemplo es que la orden no da un criterio verificable; quien la lea podría interpretarla de otra manera.',
   },
   {
     key: 'distinto',
@@ -26,7 +26,7 @@ const GUESSES = [
   {
     key: 'nada',
     label: 'Nada, se entiende igual.',
-    reply: 'Se entiende… hasta que no. Mira abajo lo que pasó de verdad con esa orden: el vehículo cayó desde 1,70 m. La ambigüedad no avisa antes de fallar.',
+    reply: 'Parece clara hasta que dos personas interpretan «altura buena» de manera distinta. Lee el caso simulado y localiza el dato que falta.',
   },
 ];
 
@@ -50,7 +50,7 @@ function Activacion() {
 
       <fieldset disabled={!!guess}>
         <legend className="mb-3 font-sans text-base font-semibold text-deep-blue">
-          En un taller de verdad, ¿qué crees que pasó con esta orden?
+          En este caso simulado, ¿qué podría pasar con esta orden?
         </legend>
         <div className="grid grid-cols-1 gap-2 lg:grid-cols-3">
           {GUESSES.map(({ key, label }) => {
@@ -110,7 +110,7 @@ function CaseAnalysis({ question }) {
         ¿Qué falló en la orden?
       </h4>
       <p className="text-xs text-mineral mb-4">
-        Aplica las funciones del lenguaje (apelativa vs. referencial) que estudiaste en la teoría.
+        Aplica las funciones del lenguaje (apelativa y referencial) que estudiaste en la teoría.
       </p>
 
       <div className="mb-4 border-l-2 border-inst-blue bg-paper-card p-3.5 font-serif text-sm sm:text-base leading-relaxed text-charcoal">
@@ -188,16 +188,16 @@ export function IntroSection() {
       step="01"
       monoTag="Marco operativo y seguridad industrial"
       title="Por qué una instrucción mal escrita hace daño"
-      subtitle="En literatura, la ambigüedad es un recurso. En un taller técnico, la ambigüedad es un accidente."
-      objective="Podrás explicar con un caso real por qué una orden técnica ambigua es un riesgo físico, y nombrar las dos funciones del lenguaje que usa un manual."
+      subtitle="Tu reto es escribir instrucciones que otra persona pueda seguir sin adivinar. Comienza por detectar lo que falta en una orden ambigua."
+      objective="Podrás explicar con un caso simulado por qué una orden técnica ambigua supone un riesgo, y reconocer las funciones del lenguaje que usa un manual."
       duration="8 minutos"
       points="Sin puntaje"
-      practiceTag="Estudio de caso real"
-      practiceTitle="Análisis del informe de contingencia"
+      practiceTag="Caso simulado"
+      practiceTitle="Analiza una orden ambigua"
       tasks={[
         'Predices qué pasó con una orden ambigua.',
         'Estudias qué es un texto instructivo y para qué existe.',
-        'Analizas el informe de un accidente real y respondes la pregunta técnica.',
+        'Analizas un escenario simulado y respondes la pregunta de interpretación.',
       ]}
       activacion={
         <>
@@ -216,7 +216,7 @@ export function IntroSection() {
             </span>
             <div>
               <p className="mono-label mono-label--plain text-danger-ink">
-                Informe de contingencia · {specialtyData.shortName}
+                Escenario simulado · {specialtyData.shortName}
               </p>
               <h3 className="mt-1 font-sans text-lg sm:text-xl font-bold leading-snug text-deep-blue">
                 {accidentCase.headline}
@@ -292,8 +292,8 @@ export function IntroSection() {
       <KeyIdea>
         Un texto instructivo no se juzga por bonito, sino por <strong>cuántas
         lecturas admite</strong>. A eso se le llama <Termino term="ambigüedad">ambigüedad</Termino>.
-        Si admite dos, alguien va a elegir la equivocada justo cuando hay una
-        tonelada encima.
+        Si admite dos, hay que precisar la acción, el componente o la condición
+        antes de ponerla en práctica.
       </KeyIdea>
     </SectionWrapper>
   );

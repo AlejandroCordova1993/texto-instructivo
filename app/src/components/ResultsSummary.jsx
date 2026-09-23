@@ -4,20 +4,21 @@ import { SPECIALTIES_DATA } from '../data/curriculumData';
 import { SectionWrapper } from './SectionWrapper';
 import { KeyIdea, Callout } from './Didactics';
 import { Printer, RotateCcw, ArrowRight, Check, Trophy } from 'lucide-react';
+import { getDraftReadiness } from '../lib/workshop';
 
 const CRITERIA = [
   { key: 'forensic', label: 'Detección de vicios de redacción', module: '02', anchor: '#forensic' },
   { key: 'antiComodin', label: 'Léxico técnico normado', module: '02', anchor: '#forensic' },
   { key: 'verbal', label: 'Consistencia de modos verbales', module: '03', anchor: '#verbal' },
   { key: 'sequence', label: 'Cohesión con conectores', module: '04', anchor: '#sequence' },
-  { key: 'safetySheet', label: 'Estructura de la ficha técnica', module: '05', anchor: '#safety-sheet' },
+  { key: 'safetySheet', label: 'Estructura del texto instructivo', module: '05', anchor: '#safety-sheet' },
 ];
 
 function levelFor(total) {
-  if (total >= 9) return { title: 'Técnico inspector autónomo', note: 'Dominas la precisión que exige un manual de taller.' };
-  if (total >= 7) return { title: 'Técnico operador aprobado', note: 'Tu redacción ya es utilizable en el taller; afina los detalles.' };
-  if (total >= 5) return { title: 'En proceso de nivelación', note: 'Vas por buen camino. Abajo te digo exactamente dónde volver.' };
-  return { title: 'Aprendiz en proceso', note: 'Aún queda trabajo, y eso está bien: se aprende reintentando.' };
+  if (total >= 9) return { title: 'Muy buen dominio', note: 'Revisa una vez más la claridad de tu texto antes de entregarlo.' };
+  if (total >= 7) return { title: 'Buen avance', note: 'Ya aplicas varios criterios; usa el desglose para afinar los restantes.' };
+  if (total >= 5) return { title: 'En desarrollo', note: 'Vuelve a los criterios señalados y mejora tu trabajo.' };
+  return { title: 'En proceso', note: 'Lee la retroalimentación y continúa las actividades pendientes.' };
 }
 
 function ConfirmReset({ onCancel, onConfirm }) {
@@ -48,7 +49,7 @@ function ConfirmReset({ onCancel, onConfirm }) {
           <p id="reset-desc" className="mb-6 text-sm leading-relaxed text-mineral">
             Se borran tus respuestas y <strong className="text-charcoal">los dos párrafos que
             escribiste</strong> en esta carrera. Tu avance en la otra especialidad no se toca.
-            Si aún no imprimiste tu ficha, hazlo antes.
+            Si aún no imprimiste tu texto, hazlo antes.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
             <button
@@ -86,7 +87,7 @@ function FillLine({ label }) {
 }
 
 export function ResultsSummary() {
-  const { specialty, scores, progress, resetProgress } = useStudent();
+  const { specialty, scores, progress, resetProgress, markResultsReviewed } = useStudent();
   const specialtyData = SPECIALTIES_DATA[specialty] || SPECIALTIES_DATA.automotriz;
   const { mainMachine, name: specialtyName } = specialtyData;
 
@@ -95,6 +96,9 @@ export function ResultsSummary() {
   const total = scores.total || 0;
   const level = levelFor(total);
   const pending = CRITERIA.filter((c) => scores[c.key] < 2);
+  const draft = getDraftReadiness(progress.safetySheet, specialtyData.safetyEquipments);
+
+  useEffect(() => { markResultsReviewed(); }, [markResultsReviewed]);
 
   const today = new Date().toLocaleDateString('es-EC', {
     year: 'numeric', month: 'long', day: 'numeric',
@@ -104,9 +108,9 @@ export function ResultsSummary() {
     <SectionWrapper
       id="results"
       step="06"
-      monoTag="Evaluación formativa y bitácora"
-      title="Tu resultado y tu ficha técnica"
-      subtitle="Mira en qué criterio estás más flojo, vuelve al módulo que corresponda y emite tu documento."
+      monoTag="Evaluación formativa y entrega"
+      title="Revisa tu puntaje y tu texto"
+      subtitle="Aquí ves los puntos de tus actividades y del texto instructivo. Si falta algo, vuelve a la etapa correspondiente antes de imprimir."
     >
       {/* Rúbrica — no se imprime */}
       <div className="no-print">
@@ -172,7 +176,7 @@ export function ResultsSummary() {
                           href={anchor}
                           className="inline-flex items-center gap-1 border-b border-active-blue/40 pb-0.5 font-sans text-sm font-medium text-active-blue transition-colors hover:border-active-blue"
                         >
-                          Volver
+                          Revisar
                           <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                           <span className="sr-only"> al módulo {module}</span>
                         </a>
@@ -185,22 +189,36 @@ export function ResultsSummary() {
 
             {pending.length > 0 && (
               <p className="mt-5 text-base leading-relaxed text-mineral">
-                Te faltan <strong className="text-charcoal">{pending.length}</strong>{' '}
-                {pending.length === 1 ? 'criterio' : 'criterios'}. Puedes volver a
-                cualquier módulo: reintentar siempre suma algo.
+                En <strong className="text-charcoal">{pending.length}</strong>{' '}
+                {pending.length === 1 ? 'criterio obtuviste' : 'criterios obtuviste'} menos de 2 puntos.
+                Puedes revisar esas etapas; una actividad terminada puede conservar menos puntos por intentos anteriores.
               </p>
             )}
+            <p className="mt-4 border-t border-line pt-4 text-sm leading-relaxed text-mineral">
+              El puntaje comprueba respuestas y requisitos de estructura. Tu docente debe revisar la claridad y la pertinencia técnica del texto.
+            </p>
           </div>
         </div>
 
+        {!draft.ready && <div className="mt-8 border-t-2 border-inst-red bg-paper-card px-5 py-4 text-sm leading-relaxed">
+          <p className="font-bold text-deep-blue">Antes de imprimir, completa tu texto instructivo en la etapa 05:</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-charcoal">
+            {!draft.checks.epp && <li>Selecciona el equipo de protección necesario, sin elementos ajenos al procedimiento.</li>}
+            {!draft.checks.preparation && <li>Redacta al menos 120 caracteres sobre seguridad e inspección.</li>}
+            {!draft.checks.procedure && <li>Redacta al menos 120 caracteres sobre el procedimiento.</li>}
+            {!draft.checks.connectors && <li>Incluye dos conectores temporales distintos en el procedimiento.</li>}
+          </ul>
+          <a href="#safety-sheet" className="mt-3 inline-flex min-h-11 items-center font-bold text-inst-blue underline">Volver a mi texto</a>
+        </div>}
         <div className="mt-8 flex flex-wrap items-center justify-between gap-5">
           <button
             type="button"
             onClick={() => window.print()}
-            className="flex min-h-[3.25rem] items-center gap-2.5 bg-deep-blue px-7 py-3.5 text-base font-bold text-white transition-colors hover:bg-inst-blue"
+            disabled={!draft.ready}
+            className="flex min-h-[3.25rem] items-center gap-2.5 bg-deep-blue px-7 py-3.5 text-base font-bold text-white transition-colors hover:bg-inst-blue disabled:cursor-not-allowed disabled:bg-mineral"
           >
             <Printer className="h-5 w-5" aria-hidden="true" />
-            Imprimir mi ficha (1 hoja)
+            Imprimir mi texto instructivo (1 hoja)
           </button>
 
           <button
@@ -215,7 +233,7 @@ export function ResultsSummary() {
 
         <div className="mt-6">
           <Callout tone="aviso" title="Antes de imprimir">
-            Solo sale la Ficha de Operación Segura, no el taller completo.{' '}
+            Solo se imprime tu texto instructivo, no las actividades del taller.{' '}
             <strong className="text-charcoal">Escribe tu nombre y tu curso a mano</strong> en
             las líneas del documento.
           </Callout>
@@ -226,22 +244,20 @@ export function ResultsSummary() {
           DOCUMENTO IMPRIMIBLE
           Única raíz que llega al papel (ver @media print en index.css).
           ------------------------------------------------------------------ */}
-      <article
+      {draft.ready && <article
         id="ficha-imprimible"
         className="mt-12 border-2 border-charcoal bg-paper-pure p-6 text-charcoal sm:p-10 print-page-break"
       >
         <header className="mb-8 border-b-2 border-charcoal pb-5 text-center">
-          <p className="font-mono text-label uppercase tracking-label text-charcoal">
-            República del Ecuador · Ministerio de Educación
-          </p>
-          <h3 className="mt-1.5 font-sans text-xl font-bold uppercase tracking-tight text-deep-blue sm:text-2xl">
-            Ficha de Operación Segura de Taller
-          </h3>
+          <p className="font-mono text-label uppercase tracking-label text-charcoal">Lengua y Literatura · Bachillerato Técnico</p>
+          <h2 className="mt-1.5 font-sans text-xl font-bold uppercase tracking-tight text-deep-blue sm:text-2xl">
+            Mi texto instructivo
+          </h2>
           <p className="mt-1 font-serif text-sm italic text-mineral">
-            Bachillerato Técnico · Área de Lengua y Literatura y Formación Técnica
+            Ejercicio de redacción; no sustituye el manual del equipo ni la supervisión docente
           </p>
           <p className="mt-3 inline-block border border-charcoal px-3 py-1 font-mono text-label font-medium uppercase tracking-label print-keep-ink">
-            Documento FOS-01
+            Trabajo del estudiante
           </p>
         </header>
 
@@ -267,7 +283,7 @@ export function ResultsSummary() {
             <strong>Máquina o dispositivo:</strong> {mainMachine}
           </p>
           <p className="text-sm leading-relaxed">
-            <strong>Modo verbal normado:</strong>{' '}
+            <strong>Modo verbal elegido:</strong>{' '}
             <span className="font-mono uppercase">{progress.safetySheet?.verbalModeChosen || 'infinitivo'}</span>
           </p>
           <p className="mt-2 text-sm leading-relaxed">
@@ -310,7 +326,7 @@ export function ResultsSummary() {
           <div>
             <div className="mx-auto mb-1.5 w-full max-w-[12rem] border-b border-charcoal" />
             <p className="font-sans text-sm font-bold text-deep-blue">Firma del estudiante</p>
-            <p className="font-mono text-label uppercase tracking-label text-mineral">Técnico operador en práctica</p>
+            <p className="font-mono text-label uppercase tracking-label text-mineral">Autor del texto</p>
           </div>
           <div>
             <div className="mx-auto mb-1.5 w-full max-w-[12rem] border-b border-charcoal" />
@@ -320,14 +336,14 @@ export function ResultsSummary() {
         </div>
 
         <p className="mt-8 border-t border-line pt-4 text-center font-mono text-label uppercase tracking-label text-mineral">
-          Documento de práctica pedagógica · Quito, Ecuador
+          Documento de práctica pedagógica · No es un protocolo oficial de seguridad
         </p>
-      </article>
+      </article>}
 
-      <KeyIdea title="Y con esto cierras el taller">
-        Escribir instrucciones no es un ejercicio de gramática: es la diferencia
-        entre que alguien haga bien la maniobra o la interprete a su manera. Esa
-        hoja que acabas de emitir es la prueba de que ya sabes hacerlo.
+      <KeyIdea title="La idea que te llevas">
+        Escribir instrucciones claras ayuda a que otra persona comprenda el orden
+        y las condiciones de una tarea. Tu texto muestra cómo organizas esas
+        ideas; antes de operar un equipo, consulta siempre su manual y a tu docente.
       </KeyIdea>
 
       {confirming && (

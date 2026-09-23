@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useStudent, CONNECTOR_LIST, countConnectors } from '../context/StudentContext';
 import { SPECIALTIES_DATA } from '../data/curriculumData';
 import { SectionWrapper } from './SectionWrapper';
+import { getDraftReadiness } from '../lib/workshop';
 import { KeyIdea, Callout, StepHeading } from './Didactics';
 import { Check, AlertTriangle, Lightbulb, BookOpen, HardHat, PenLine, Megaphone, BookMarked, Info, ShieldAlert, FileText, ListOrdered } from 'lucide-react';
 import { Termino } from './Glosario';
@@ -171,7 +172,7 @@ export function SafetySheetBuilder() {
   const trapsPicked = safetyEquipments.filter((e) => !e.required && selectedEpp.includes(e.id));
 
   const detected = countConnectors(paragraph2);
-  const ready = paragraph1.trim().length >= 120 && paragraph2.trim().length >= 120 && detected.length >= 2;
+  const ready = getDraftReadiness(sheet, safetyEquipments).ready;
 
   const [pasteAlert, setPasteAlert] = useState(false);
   const pasteTimeoutRef = useRef(null);
@@ -342,8 +343,8 @@ export function SafetySheetBuilder() {
       id="safety-sheet"
       step="05"
       monoTag="Taller de redacción guiada"
-      title="Escribe tu Ficha de Operación Segura"
-      subtitle="Todo lo anterior aterriza aquí: dos párrafos que se imprimen y se entregan."
+      title="Escribe tu texto instructivo"
+      subtitle="Ahora aplica lo aprendido. Escribe dos párrafos: preparación y seguridad primero; procedimiento y cierre después."
       objective="Podrás redactar un procedimiento técnico completo: equipo de protección, inspección previa y secuencia operativa enlazada con conectores."
       duration="15 minutos"
       points="2 de los 10 puntos"
@@ -355,37 +356,9 @@ export function SafetySheetBuilder() {
     >
       <Callout tone="aviso" title={`Tu equipo: ${mainMachine}`}>
         No hay botón de guardar: todo lo que escribas se guarda solo en este
-        equipo, a medida que escribes.
+        equipo, a medida que escribes. Este texto es una práctica de Lengua y
+        Literatura, no un protocolo oficial de uso de la máquina.
       </Callout>
-
-      {/* Guía general de la actividad */}
-      <div className="card mt-6 border-l-4 border-l-inst-blue bg-ok-bg/30 p-5">
-        <div className="mb-2 flex items-center gap-2 font-mono text-label uppercase tracking-label text-inst-blue font-bold">
-          <Info className="h-4 w-4" aria-hidden="true" />
-          ¿Cómo completar tu Ficha de Operación Segura (FOS-01)?
-        </div>
-        <p className="text-sm text-charcoal leading-relaxed">
-          Esta es la evaluación práctica final. Vas a elaborar la ficha técnica oficial que normará el uso seguro de tu máquina (<strong>{mainMachine}</strong>). Para completarla con éxito, realiza estos 4 pasos en orden:
-        </p>
-        <ol className="mt-3 grid grid-cols-1 gap-2.5 text-xs text-charcoal sm:grid-cols-2 lg:grid-cols-4 font-sans">
-          <li className="border border-line bg-paper-pure p-3">
-            <span className="font-mono font-bold text-inst-blue block mb-1">Paso 1: EPP</span>
-            Selecciona únicamente el equipo de protección obligatorio (cuidado con los prohibidos).
-          </li>
-          <li className="border border-line bg-paper-pure p-3">
-            <span className="font-mono font-bold text-inst-blue block mb-1">Paso 2: Párrafo 1</span>
-            Escribe qué EPP te colocas y qué condiciones de seguridad revisas en el puesto antes de encender.
-          </li>
-          <li className="border border-line bg-paper-pure p-3">
-            <span className="font-mono font-bold text-inst-blue block mb-1">Paso 3: Modo verbal</span>
-            Elige si redactarás en Infinitivo (cortar, fijar) o Imperativo (corte, fije).
-          </li>
-          <li className="border border-line bg-paper-pure p-3">
-            <span className="font-mono font-bold text-inst-blue block mb-1">Paso 4: Párrafo 2</span>
-            Describe la operación en 3 fases usando conectores o numerando pasos (1, 2, 3...), con al menos 2 conectores de orden.
-          </li>
-        </ol>
-      </div>
 
       {/* --- Paso 1: EPP --- */}
       <section aria-labelledby="epp-title" className="mt-12">
@@ -402,7 +375,7 @@ export function SafetySheetBuilder() {
           }
         />
 
-        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {safetyEquipments.map((epp) => {
             const isSelected = selectedEpp.includes(epp.id);
             const isTrapPicked = isSelected && !epp.required;
@@ -507,33 +480,13 @@ export function SafetySheetBuilder() {
             />
             <p id="p1-nota-pegar" className="mt-2 flex items-center gap-1.5 font-mono text-[11px] text-danger-ink">
               <ShieldAlert className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              Pegado de texto y portapapeles desactivados (incluido teclado de celular): redacta directamente con el teclado para validar tu evaluación individual.
+              Escribe con tus palabras; en esta práctica el pegado está desactivado.
             </p>
-            {pasteAlert && (
-              <div
-                role="alert"
-                className="mt-2.5 flex items-start gap-2.5 border-2 border-danger bg-danger-bg p-3 font-sans text-xs text-danger-ink animate-settleIn"
-              >
-                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-danger" aria-hidden="true" />
-                <div className="flex-1">
-                  <strong className="block font-bold">¡Acción bloqueada! El pegado o inserción desde el portapapeles no está permitido</strong>
-                  <span>Esta actividad evalúa tu redacción técnica individual. Escribe tu procedimiento directamente pulsando las teclas (el portapapeles del celular o del teclado está bloqueado).</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setPasteAlert(false)}
-                  className="px-1 font-bold text-danger hover:underline"
-                  aria-label="Cerrar aviso"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
             <div id="p1-criterios" className="mt-2 flex flex-wrap items-center justify-between gap-2">
               <Criteria
                 items={[
                   { label: 'Tiene cuerpo (120+)', met: paragraph1.trim().length >= 120 },
-                  { label: 'Nombra el EPP', met: paragraph1.trim().length >= 40 },
+                  { label: 'Borrador iniciado (40+)', met: paragraph1.trim().length >= 40 },
                 ]}
               />
               <p className="font-mono text-xs tabular-nums text-mineral">
@@ -645,7 +598,7 @@ export function SafetySheetBuilder() {
                   ¿Conectores o numeración (1, 2, 3...)?
                 </p>
                 <p className="mt-1 text-xs leading-relaxed text-charcoal">
-                  En los textos instructivos de taller, el orden se puede señalar tanto con <strong>numeración directa (1, 2, 3...)</strong> como mediante <strong>conectores cronológicos (Inicialmente... Posteriormente... Finalmente...)</strong> en párrafo continuo. Ambos métodos son válidos en la industria (como en las <Termino term="hojas sop">hojas SOP</Termino> y manuales de fabricante). En esta actividad puedes redactar en bloque o numerar tus oraciones (ej. <em>«1. Inicialmente, fijar... 2. Posteriormente, accionar... 3. Finalmente, desconectar...»</em>), asegurándote de incorporar al menos 2 conectores de orden.
+                  Puedes numerar los pasos o escribirlos en un párrafo. Para obtener el punto de redacción, incluye también al menos dos conectores distintos, por ejemplo <em>«Inicialmente»</em> y <em>«Finalmente»</em>.
                 </p>
               </div>
 
@@ -673,28 +626,8 @@ export function SafetySheetBuilder() {
             />
             <p id="p2-nota-pegar" className="mt-2 flex items-center gap-1.5 font-mono text-[11px] text-danger-ink">
               <ShieldAlert className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              Pegado de texto y portapapeles desactivados (incluido teclado de celular): redacta directamente con el teclado para validar tu evaluación individual.
+              Escribe con tus palabras; en esta práctica el pegado está desactivado.
             </p>
-            {pasteAlert && (
-              <div
-                role="alert"
-                className="mt-2.5 flex items-start gap-2.5 border-2 border-danger bg-danger-bg p-3 font-sans text-xs text-danger-ink animate-settleIn"
-              >
-                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-danger" aria-hidden="true" />
-                <div className="flex-1">
-                  <strong className="block font-bold">¡Acción bloqueada! El pegado o inserción desde el portapapeles no está permitido</strong>
-                  <span>Esta actividad evalúa tu redacción técnica individual. Escribe tu procedimiento directamente pulsando las teclas (el portapapeles del celular o del teclado está bloqueado).</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setPasteAlert(false)}
-                  className="px-1 font-bold text-danger hover:underline"
-                  aria-label="Cerrar aviso"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
             <div id="p2-criterios" className="mt-2 flex flex-wrap items-center justify-between gap-2">
               <Criteria
                 items={[
@@ -743,24 +676,24 @@ export function SafetySheetBuilder() {
         </div>
       </section>
 
-      {/* --- Estado de la ficha --- */}
+      {/* --- Estado del texto final --- */}
       <div className="mt-12">
         {ready ? (
-          <Callout tone="logro" title="Tu ficha está lista">
-            Ya puedes verla e imprimirla en el módulo 06. Todo quedó guardado en
+          <Callout tone="logro" title="Tu texto instructivo está listo">
+            Ya puedes verla e imprimirla en la etapa 06. Todo quedó guardado en
             este equipo.
           </Callout>
         ) : (
           <Callout tone="aviso" title="Sigue redactando">
-            Cuando los dos párrafos tengan cuerpo y el segundo enlace al menos dos
-            conectores, la ficha queda completa. Las etiquetas de arriba te dicen
-            qué falta.
+            Selecciona el EPP adecuado y escribe al menos 120 caracteres en cada
+            párrafo. El segundo necesita dos conectores de orden distintos. Las
+            etiquetas junto a los campos muestran tu avance.
           </Callout>
         )}
       </div>
 
       <KeyIdea>
-        Una ficha de operación segura no es una <Termino term="bitácora">bitácora</Termino> de
+        Un texto instructivo no es una <Termino term="bitácora">bitácora</Termino> de
         lo que hiciste: es{' '}
         <strong>un conjunto de órdenes que otra persona podría seguir</strong> sin
         que tú estés al lado para aclarar nada.
@@ -778,10 +711,10 @@ export function SafetySheetBuilder() {
           </span>
           <div className="space-y-1">
             <p className="font-sans text-sm font-bold text-danger-ink">
-              Acción bloqueada: Portapapeles y pegado desactivados
+              En esta actividad no se puede pegar texto
             </p>
             <p className="text-xs leading-relaxed text-charcoal">
-              Esta actividad evalúa tu propia redacción técnica. Debes redactar el procedimiento directamente con el teclado (el portapapeles del celular o del teclado está bloqueado).
+              Escribe tu texto con tus palabras directamente en el campo. Lo que ya habías escrito sigue guardado.
             </p>
           </div>
           <button

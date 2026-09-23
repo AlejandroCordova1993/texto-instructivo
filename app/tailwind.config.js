@@ -122,6 +122,7 @@ export default {
 
       maxWidth: {
         brand: '1280px',   // retícula del manual
+        stage: '72rem',    // retícula amplia para teoría y práctica, sin llegar al ancho de marca
         reading: '68ch',   // medida de lectura para los pasajes en serif
       },
 

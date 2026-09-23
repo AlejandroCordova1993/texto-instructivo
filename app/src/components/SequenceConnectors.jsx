@@ -118,7 +118,7 @@ export function SequenceConnectors() {
       <StepHeading
         title={sequenceActivity.title}
         hint="Ordena los pasos cronológicamente con las flechas. Observa a la derecha cómo se ensambla el texto continuo (esta actividad califica hasta 2.0 puntos)."
-        trailing={
+        trailing={!isCompleted && (
           <button
             type="button"
             onClick={handleReset}
@@ -127,7 +127,7 @@ export function SequenceConnectors() {
             <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
             Reiniciar orden
           </button>
-        }
+        )}
       />
 
       {/* Grid de 2 columnas: Columna izquierda (Actividad) | Columna derecha (Resultado y Aprendizaje) */}

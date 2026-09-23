@@ -177,9 +177,9 @@ export const TEORIA = {
   },
 
   'safety-sheet': {
-    titulo: 'Estructura de la Ficha de Operación Segura',
+    titulo: 'Estructura del texto instructivo final',
     dcd: 'Ref. LL.5.4.7',
-    intro: 'Todo procedimiento operativo formal consta de dos bloques textuales bien diferenciados. Esta es la estructura que vas a redactar.',
+    intro: 'Vas a redactar un texto instructivo técnico en dos párrafos. El primero prepara la tarea; el segundo ordena las acciones y el cierre.',
     bloques: [
       {
         tipo: 'lista',

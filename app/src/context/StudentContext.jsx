@@ -1,4 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { SPECIALTIES_DATA } from '../data/curriculumData';
+import { calculateScores, getModuleStatus, resetSequenceProgress } from '../lib/workshop';
+
+export { CONNECTOR_LIST, countConnectors } from '../lib/workshop';
 
 const StudentContext = createContext();
 
@@ -30,6 +34,7 @@ const emptyProgress = () => ({
   sequenceOrder: [],
   sequenceCompleted: false,
   sequenceChecks: 0,
+  resultsReviewed: false,
   safetySheet: {
     selectedEpp: [],
     verbalModeChosen: 'infinitivo',
@@ -50,27 +55,6 @@ const emptyBook = () => ({
   automotriz: emptyProgress(),
   industrial: emptyProgress(),
 });
-
-/* El crédito depende del intento. Se puede reintentar para aprender, pero
- * repetir a ciegas ya no garantiza el puntaje completo. */
-const attemptFactor = (attempts) => {
-  if (attempts <= 1) return 1;
-  if (attempts === 2) return 0.5;
-  return 0.25;
-};
-
-const CONNECTORS = [
-  'inicialmente', 'en primer lugar', 'antes de operar',
-  'posteriormente', 'seguidamente', 'a continuación', 'luego',
-  'finalmente', 'por último', 'al concluir',
-];
-
-export const CONNECTOR_LIST = CONNECTORS;
-
-export const countConnectors = (text = '') => {
-  const lower = text.toLowerCase();
-  return CONNECTORS.filter((c) => lower.includes(c));
-};
 
 function readJSON(key, fallback) {
   try {
@@ -143,54 +127,6 @@ export function StudentProvider({ children }) {
     return () => window.removeEventListener('pagehide', flush);
   }, [session, book]);
 
-  const recalc = useCallback((p, meta) => {
-    const forensic = Object.values(p.forensicAnswers).reduce(
-      (sum, a) => sum + (a.isCorrect ? 0.5 * attemptFactor(a.attempts) : 0), 0
-    );
-
-    const perItem = 2 / (meta?.antiComodinCount || 6);
-    const antiComodin = Object.values(p.antiComodinAnswers).reduce(
-      (sum, a) => sum + (a.isCorrect ? perItem * attemptFactor(a.attempts) : 0), 0
-    );
-
-    const verbal = p.verbalExerciseAnswer === 'unificar'
-      ? 2 * attemptFactor(p.verbalAttempts)
-      : 0;
-
-    const sequence = p.sequenceCompleted ? 2 * attemptFactor(p.sequenceChecks) : 0;
-
-    let safetySheet = 0;
-    const required = meta?.requiredEpp || [];
-    const traps = meta?.trapEpp || [];
-    const picked = p.safetySheet.selectedEpp || [];
-    if (required.length) {
-      const allRequired = required.every((id) => picked.includes(id));
-      const noTraps = !picked.some((id) => traps.includes(id));
-      if (allRequired && noTraps) safetySheet += 1;
-      else if (allRequired) safetySheet += 0.5;
-    }
-    const p1 = (p.safetySheet.paragraph1 || '').trim();
-    const p2 = (p.safetySheet.paragraph2 || '').trim();
-    const connectors = countConnectors(p2);
-    if (p1.length >= 120 && p2.length >= 120 && connectors.length >= 2) safetySheet += 1;
-    else if (p1.length >= 40 && p2.length >= 40 && connectors.length >= 1) safetySheet += 0.5;
-
-    const round = (n) => Number(n.toFixed(2));
-    const scores = {
-      forensic: round(Math.min(2, forensic)),
-      antiComodin: round(Math.min(2, antiComodin)),
-      verbal: round(Math.min(2, verbal)),
-      sequence: round(Math.min(2, sequence)),
-      safetySheet: round(Math.min(2, safetySheet)),
-      total: 0,
-    };
-    scores.total = Number(
-      Math.min(10, scores.forensic + scores.antiComodin + scores.verbal + scores.sequence + scores.safetySheet)
-        .toFixed(1)
-    );
-    return scores;
-  }, []);
-
   const metaRef = useRef({});
   const registerMeta = useCallback((meta) => {
     metaRef.current = { ...metaRef.current, ...meta };
@@ -201,10 +137,10 @@ export function StudentProvider({ children }) {
       const current = prev[specialty];
       const next = fn(current);
       if (next === current) return prev;
-      next.scores = recalc(next, metaRef.current);
+      next.scores = calculateScores(next, metaRef.current);
       return { ...prev, [specialty]: next };
     });
-  }, [specialty, recalc]);
+  }, [specialty]);
 
   /* --- Sesión --- */
 
@@ -296,11 +232,7 @@ export function StudentProvider({ children }) {
   };
 
   const resetSequence = () => {
-    mutate((p) => ({
-      ...p,
-      sequenceOrder: null,
-      sequenceCompleted: false,
-    }));
+    mutate(resetSequenceProgress);
   };
 
   const updateSafetySheet = (data) => {
@@ -321,31 +253,18 @@ export function StudentProvider({ children }) {
     setBook((prev) => ({ ...prev, [specialty]: emptyProgress() }));
   };
 
-  /* Estado de cada módulo, para el indicador de avance del encabezado.
-   * 'done' | 'started' | 'todo' — el estudiante necesita ver dónde va. */
+  const markResultsReviewed = useCallback(() => {
+    mutate((p) => p.resultsReviewed ? p : { ...p, resultsReviewed: true });
+  }, [mutate]);
+
   const moduleStatus = useMemo(() => {
-    const s = progress.scores;
-    const state = (score, max, started) =>
-      score >= max * 0.999 ? 'done' : (started ? 'started' : 'todo');
-
-    const p1 = (progress.safetySheet.paragraph1 || '').trim();
-    const p2 = (progress.safetySheet.paragraph2 || '').trim();
-
-    return {
-      intro: (progress.introAnswered && progress.caseAnalysisAnswer) ? 'done' : (progress.introAnswered || progress.caseAnalysisAnswer ? 'started' : 'todo'),
-      forensic: state(
-        s.forensic + s.antiComodin, 4,
-        Object.keys(progress.forensicAnswers).length + Object.keys(progress.antiComodinAnswers).length > 0
-      ),
-      verbal: state(s.verbal, 2, progress.verbalExerciseAnswer !== null),
-      sequence: state(s.sequence, 2, (progress.sequenceChecks || 0) > 0),
-      'safety-sheet': state(
-        s.safetySheet, 2,
-        (progress.safetySheet.selectedEpp || []).length > 0 || p1.length > 0 || p2.length > 0
-      ),
-      results: s.total > 0 ? 'started' : 'todo',
-    };
-  }, [progress]);
+    const data = SPECIALTIES_DATA[specialty];
+    return getModuleStatus(progress, {
+      flawsCount: data.flawsCases.length,
+      antiComodinCount: data.antiComodin.length,
+      safetyEquipments: data.safetyEquipments,
+    });
+  }, [progress, specialty]);
 
   return (
     <StudentContext.Provider
@@ -372,6 +291,7 @@ export function StudentProvider({ children }) {
         updateSafetySheet,
         toggleEpp,
         resetProgress,
+        markResultsReviewed,
       }}
     >
       {children}

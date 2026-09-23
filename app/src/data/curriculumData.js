@@ -18,7 +18,7 @@ export const SPECIALTIES_DATA = {
       consequence: 'Al subir a 1.70 m, el vehículo venció el centro de gravedad y cayó lateralmente. Destrucción de la carrocería, rotura de brazos del elevador y peligro inminente de aplastamiento para el técnico en fosa.',
       lesson: 'Una instrucción ambigua en un taller automotriz no es un error de ortografía: es un riesgo vital y una pérdida de miles de dólares.',
       question: {
-        prompt: 'A la luz de este accidente, analiza la orden: «Dale para arriba hasta una buena altura y acomoda los brazos más o menos por abajo». ¿Cuál de las dos funciones del lenguaje falló y causó el colapso?',
+        prompt: 'En este escenario simulado, analiza la orden: «Dale para arriba hasta una buena altura y acomoda los brazos más o menos por abajo». ¿Qué información verificable falta?',
         options: [
           {
             key: 'referencial',
@@ -44,8 +44,8 @@ export const SPECIALTIES_DATA = {
         text: 'Para subir ese carro con el aparato de las columnas, primero vean que el seguro ese esté puesto más o menos. Después le dan al botón para que suba hasta una altura buena y acomodan los brazos por debajo por cualquier lado. Si se mueve raro o hace un ruido feo, bájenlo un poco o desconéctenlo rápido para que no pase nada malo. Cuando terminen, dejen las cosas por ahí cerca y avisen que ya.'
       },
       versionB: {
-        title: 'Versión B — Protocolo Operativo Estándar (Norma Técnica)',
-        badge: 'NORMA TÉCNICA ESTANDARIZADA',
+        title: 'Versión B — Modelo didáctico de redacción precisa',
+        badge: 'MODELO DE REDACCIÓN · NO ES UN MANUAL OPERATIVO',
         steps: [
           {
             phase: 'Inspección previa',
@@ -220,7 +220,7 @@ export const SPECIALTIES_DATA = {
       consequence: 'Al embragar el husillo a 750 RPM para iniciar el cilindrado, la llave salió eyectada como un proyectil a más de 120 km/h, pulverizando la pantalla de policarbonato y fracturando el carro portaherramientas.',
       lesson: 'En mecanizado y máquinas rotativas, la regla de oro es inviolable: ¡JAMÁS deje la llave colocada en el plato! El texto instructivo debe advertir esta condición previa de forma explícita y no negociable.',
       question: {
-        prompt: 'A la luz de este accidente, analiza la orden: «Dale a la palanca para ver si gira suave». ¿Qué función o elemento indispensable del texto técnico se omitió antes de accionar la máquina?',
+        prompt: 'En este escenario simulado, analiza la orden: «Dale a la palanca para ver si gira suave». ¿Qué condición previa omitió el texto antes de accionar la máquina?',
         options: [
           {
             key: 'referencial',
@@ -246,8 +246,8 @@ export const SPECIALTIES_DATA = {
         text: 'Para armar esa estructura con los fierros en L, primero córtenle al ojo con la amoladora y suéldenle con cualquier electrodo que encuentren por ahí. Échenle bastante chispa para que pegue bien duro y si queda chueco le dan unos martillazos. Al final piquen la escoria con cualquier desarmador sin ponerse la careta y dejen los cables botados en el piso.'
       },
       versionB: {
-        title: 'Versión B — Protocolo Operativo Estándar (Norma Técnica y AWS)',
-        badge: 'NORMA TÉCNICA ESTANDARIZADA',
+        title: 'Versión B — Modelo didáctico de redacción precisa',
+        badge: 'MODELO DE REDACCIÓN · NO ES UN MANUAL OPERATIVO',
         steps: [
           {
             phase: 'Lectura de planos y trazado',
