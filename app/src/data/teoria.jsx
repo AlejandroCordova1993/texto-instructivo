@@ -23,7 +23,7 @@ export const TEORIA = {
       {
         tipo: 'concepto',
         titulo: 'Definición y propósito operativo',
-        texto: 'Un texto instructivo o técnico orienta las acciones del lector paso a paso para realizar una tarea mecánica, eléctrica o de montaje sin márgenes de error. No busca entretener ni convencer: busca que la maniobra se ejecute igual la haga quien la haga.',
+        texto: 'Un texto instructivo o técnico orienta las acciones del lector paso a paso para realizar una tarea mecánica, eléctrica o de montaje. Indica qué hacer, en qué orden y bajo qué condiciones.',
       },
       {
         tipo: 'lista',
@@ -43,7 +43,7 @@ export const TEORIA = {
       },
     ],
     resumen: [
-      'Orienta paso a paso una tarea técnica, sin margen de error.',
+      'Orienta paso a paso una tarea técnica con acciones y condiciones claras.',
       'Función apelativa: dirige la conducta del operador.',
       'Función referencial: comunica hechos y medidas con objetividad.',
       'Se juzga por cuántas lecturas admite, no por cómo suena.',
@@ -51,13 +51,13 @@ export const TEORIA = {
   },
 
   forensic: {
-    titulo: 'Precisión lingüística: vicios y léxico',
+    titulo: 'Ambigüedad, contradicción y precisión léxica',
     dcd: 'Ref. LL.5.3.1',
-    intro: 'Hay tres formas típicas en que una instrucción falla, y una causa de fondo: el vocabulario que sirve para todo y no nombra nada.',
+    intro: 'Una instrucción puede fallar por ambigüedad, contradicción u omisión. También conviene revisar si usa palabras demasiado vagas.',
     bloques: [
       {
         tipo: 'lista',
-        titulo: 'Los tres vicios de redacción que provocan accidentes',
+        titulo: 'Tres problemas de redacción que pueden causar errores',
         items: [
           {
             term: 'Ambigüedad',
@@ -92,7 +92,7 @@ export const TEORIA = {
       'Ambigüedad: admite dos lecturas.',
       'Contradicción: dos órdenes que se anulan.',
       'Vacío: falta un paso crítico de seguridad.',
-      'Comodín fuera: husillo, contactor, manómetro, calibrar, desenergizar.',
+      'Sustituye palabras vagas por términos precisos: husillo, contactor, manómetro, calibrar, desenergizar.',
     ],
   },
 
@@ -125,21 +125,21 @@ export const TEORIA = {
       {
         tipo: 'concepto',
         titulo: 'La regla de la consistencia',
-        texto: 'Un documento técnico adopta un solo modo verbal desde el primer paso hasta el cierre. Mezclarlos obliga al operario a detenerse para decidir si dos formulaciones distintas son la misma orden, y ese medio segundo, con una máquina encendida, es el que cuesta.',
+        texto: 'Un documento técnico mantiene la misma forma verbal desde el primer paso hasta el cierre. Alternar entre imperativo, infinitivo e impersonal puede dificultar la lectura de la secuencia.',
       },
     ],
     resumen: [
       'Imperativo: «Ajuste la tuerca» — orden directa, carteles y emergencias.',
       'Infinitivo: «Ajustar la tuerca» — norma general, manuales y checklists.',
       'Impersonal: «Se ajusta la tuerca» — informes y auditorías.',
-      'Elige uno y sostenlo en todo el documento.',
+      'Mantén la misma forma verbal en todo el documento.',
     ],
   },
 
   sequence: {
     titulo: 'Cohesión cronológica',
     dcd: 'Ref. LL.5.4.7',
-    intro: 'Un procedimiento no es una lista de frases sueltas: es un flujo continuo donde cada conector indica en qué fase del trabajo estás.',
+    intro: 'En un párrafo instructivo, los conectores indican cuándo ocurre cada acción y cómo se relaciona con las demás.',
     bloques: [
       {
         tipo: 'concepto',

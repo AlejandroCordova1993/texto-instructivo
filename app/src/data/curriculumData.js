@@ -16,7 +16,7 @@ export const SPECIALTIES_DATA = {
       headline: 'Colapso de un vehículo SUV por apoyo excéntrico y trabas mecánicas no aseguradas',
       cause: 'El operador impartió la instrucción verbal imprecisa: "Dale para arriba hasta una buena altura y acomoda los brazos más o menos por abajo", omitiendo verificar las zapatas en los largueros del compacto y sin comprobar el anclaje de las trabas mecánicas.',
       consequence: 'Al subir a 1.70 m, el vehículo venció el centro de gravedad y cayó lateralmente. Destrucción de la carrocería, rotura de brazos del elevador y peligro inminente de aplastamiento para el técnico en fosa.',
-      lesson: 'Una instrucción ambigua en un taller automotriz no es un error de ortografía: es un riesgo vital y una pérdida de miles de dólares.',
+      lesson: 'Una instrucción ambigua puede causar daños a las personas y a los equipos. Debe indicar acciones y condiciones verificables.',
       question: {
         prompt: 'En este escenario simulado, analiza la orden: «Dale para arriba hasta una buena altura y acomoda los brazos más o menos por abajo». ¿Qué información verificable falta?',
         options: [
@@ -217,8 +217,8 @@ export const SPECIALTIES_DATA = {
     accidentCase: {
       headline: 'Proyección violenta de la llave del mandril en torno paralelo por omisión de protocolo',
       cause: 'Durante la práctica de mecanizado, un estudiante novato fijó un tocho de acero SAE 1020 en el plato de tres mordazas, pero dejó la llave de apriete colocada en el mandril mientras escuchaba una orden informal de su compañero: "Dale a la palanca para ver si gira suave".',
-      consequence: 'Al embragar el husillo a 750 RPM para iniciar el cilindrado, la llave salió eyectada como un proyectil a más de 120 km/h, pulverizando la pantalla de policarbonato y fracturando el carro portaherramientas.',
-      lesson: 'En mecanizado y máquinas rotativas, la regla de oro es inviolable: ¡JAMÁS deje la llave colocada en el plato! El texto instructivo debe advertir esta condición previa de forma explícita y no negociable.',
+      consequence: 'Al poner en marcha el husillo para iniciar el cilindrado, la llave salió despedida e impactó la pantalla de protección. El caso muestra por qué la verificación previa debe aparecer en la instrucción.',
+      lesson: 'Antes de poner en marcha el torno, se debe comprobar que la llave del mandril se haya retirado. La instrucción debe incluir esta condición previa de forma explícita.',
       question: {
         prompt: 'En este escenario simulado, analiza la orden: «Dale a la palanca para ver si gira suave». ¿Qué condición previa omitió el texto antes de accionar la máquina?',
         options: [
@@ -226,13 +226,13 @@ export const SPECIALTIES_DATA = {
             key: 'referencial',
             label: 'Falló la función referencial y la condición previa: no constató el estado físico de la máquina (retirar la llave del mandril antes de operar).',
             isCorrect: true,
-            feedback: '¡Exacto! El texto instructivo debe basarse en hechos y condiciones físicas comprobables (función referencial). Omitir verificar que la llave fue retirada del plato antes de dar la orden de arranque es una negligencia letal.'
+            feedback: 'Correcto. El texto debe indicar una condición física comprobable: retirar la llave del mandril antes de poner en marcha el torno. Esa verificación falta en la orden.'
           },
           {
             key: 'apelativa',
             label: 'Falló la función apelativa: la orden debió decir "accione el embrague" en lugar de "dale a la palanca".',
             isCorrect: false,
-            feedback: 'No. Aunque "dale a la palanca" es informal, la causa mortal del accidente fue omitir la verificación física previa (función referencial de seguridad).'
+            feedback: 'No. La frase es informal, pero el problema principal es que omite una verificación previa: retirar la llave del mandril antes de poner en marcha el torno.'
           }
         ]
       }
@@ -296,7 +296,7 @@ export const SPECIALTIES_DATA = {
         phrase: '"Encienda el equipo de soldadura y proceda a unir las vigas de la estructura metálica."',
         options: ['Ambigüedad', 'Contradicción', 'Vacío de información'],
         correct: 'Vacío de información',
-        feedbackCorrecto: 'Gravísimo vacío de información: omite la preparación de biseles, el tipo de electrodo normado (E6011/E7018), la regulación de amperaje según el plano y la verificación de ausencia de solventes inflamables en el área.',
+        feedbackCorrecto: 'Falta información previa necesaria: preparación de biseles, tipo de electrodo (E6011/E7018), regulación de amperaje según el plano y verificación de que no haya solventes inflamables en el área.',
         feedbackIncorrecto: 'Todavía no. La acción de encender y soldar es coherente, pero falta toda la información previa indispensable: electrodo, amperaje, bisel y seguridad contra incendios. Eso es un VACÍO DE INFORMACIÓN.'
       },
       {

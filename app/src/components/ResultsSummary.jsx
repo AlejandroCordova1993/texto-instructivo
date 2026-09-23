@@ -7,8 +7,8 @@ import { Printer, RotateCcw, ArrowRight, Check, Trophy } from 'lucide-react';
 import { getDraftReadiness } from '../lib/workshop';
 
 const CRITERIA = [
-  { key: 'forensic', label: 'Detección de vicios de redacción', module: '02', anchor: '#forensic' },
-  { key: 'antiComodin', label: 'Léxico técnico normado', module: '02', anchor: '#forensic' },
+  { key: 'forensic', label: 'Problemas de redacción', module: '02', anchor: '#forensic' },
+  { key: 'antiComodin', label: 'Uso de términos precisos', module: '02', anchor: '#forensic' },
   { key: 'verbal', label: 'Consistencia de modos verbales', module: '03', anchor: '#verbal' },
   { key: 'sequence', label: 'Cohesión con conectores', module: '04', anchor: '#sequence' },
   { key: 'safetySheet', label: 'Estructura del texto instructivo', module: '05', anchor: '#safety-sheet' },
@@ -42,7 +42,6 @@ function ConfirmReset({ onCancel, onConfirm }) {
           aria-describedby="reset-desc"
           className="w-full max-w-md border border-line bg-paper-card p-6"
         >
-          <p className="mono-label mb-3">Acción sin retorno</p>
           <h3 id="reset-title" className="mb-2 font-sans text-xl font-bold text-deep-blue">
             ¿Reiniciar esta especialidad?
           </h3>
@@ -340,7 +339,7 @@ export function ResultsSummary() {
         </p>
       </article>}
 
-      <KeyIdea title="La idea que te llevas">
+      <KeyIdea title="Antes de usar un equipo">
         Escribir instrucciones claras ayuda a que otra persona comprenda el orden
         y las condiciones de una tarea. Tu texto muestra cómo organizas esas
         ideas; antes de operar un equipo, consulta siempre su manual y a tu docente.

@@ -57,7 +57,7 @@ export function ObjectiveCard({ objective, duration, points, tasks }) {
 }
 
 /** Cierre del módulo: una sola idea, la que debe quedar. */
-export function KeyIdea({ children, title = 'Lo que acabas de aprender' }) {
+export function KeyIdea({ children, title = 'Idea clave' }) {
   return (
     <aside className="mt-14 border-t-2 border-inst-blue bg-ok-bg p-5 sm:p-6">
       <p className="mb-3 flex items-center gap-2.5 font-sans text-base font-bold text-inst-blue">

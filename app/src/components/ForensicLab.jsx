@@ -68,16 +68,16 @@ export function ForensicLab() {
     <SectionWrapper
       id="forensic"
       step="02"
-      monoTag="Análisis forense y precisión lingüística"
-      title="Caza los vicios que se cuelan en un protocolo"
-      subtitle="Compara una instrucción imprecisa con un modelo de redacción más claro. Después, encuentra los errores por tu cuenta."
-      objective="Podrás identificar ambigüedades, contradicciones y datos omitidos, y reemplazar palabras vagas por nombres precisos."
+      monoTag="Precisión de las instrucciones"
+      title="Detecta problemas de redacción"
+      subtitle="Compara una instrucción imprecisa con un modelo más claro. Después, identifica problemas en otros ejemplos."
+      objective="Identificar ambigüedades, contradicciones y datos omitidos, y sustituir palabras vagas por términos precisos."
       duration="12 minutos"
       points="4 de los 10 puntos"
       tasks={[
         'Comparas un aviso informal con un modelo didáctico de redacción.',
-        `Diagnosticas ${flawsCases.length} instrucciones defectuosas.`,
-        `Normalizas ${antiComodin.length} expresiones de taller.`,
+        `Identificas problemas en ${flawsCases.length} instrucciones.`,
+        `Sustituyes ${antiComodin.length} expresiones imprecisas.`,
       ]}
     >
       <TabBar
@@ -86,18 +86,18 @@ export function ForensicLab() {
         onChange={setActiveTab}
         tabs={[
           { id: 'comparativa', label: 'Ver la diferencia' },
-          { id: 'vicios', label: 'Caza de vicios', badge: `${solvedFlaws}/${flawsCases.length}` },
-          { id: 'anticomodines', label: 'Filtro anti-comodín', badge: `${solvedTerms}/${antiComodin.length}` },
+          { id: 'vicios', label: 'Identifica el problema', badge: `${solvedFlaws}/${flawsCases.length}` },
+          { id: 'anticomodines', label: 'Usa términos precisos', badge: `${solvedTerms}/${antiComodin.length}` },
         ]}
       />
 
       {/* ---------- 1. Ejemplo contrastado ---------- */}
       {activeTab === 'comparativa' && (
         <div id="panel-comparativa" role="tabpanel" aria-labelledby="tab-comparativa" className="animate-settleIn">
-          <Callout tone="aviso" title="Lee los dos y busca la diferencia">
-            Es el mismo procedimiento escrito dos veces. Uno se pegó en la pared por
-            costumbre; el otro se reescribió para ser más claro. Fíjate en qué desaparece cuando se
-            elimina la suposición.
+          <Callout tone="aviso" title="Lee ambos textos y compáralos">
+            Los dos textos describen el mismo procedimiento. El primero deja datos a la
+            interpretación; el segundo precisa las acciones y condiciones. Identifica qué
+            información se añadió.
           </Callout>
 
           <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -219,7 +219,7 @@ export function ForensicLab() {
 
                   <fieldset className="mt-5" disabled={isLocked}>
                     <legend className="mb-3 font-sans text-base font-semibold text-deep-blue">
-                      ¿Qué vicio tiene esta instrucción?
+                      ¿Qué problema tiene esta instrucción?
                     </legend>
                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                       {c.options.map((opt) => {
@@ -289,13 +289,13 @@ export function ForensicLab() {
                 </span>
                 <div className="max-w-reading">
                   <h3 className="font-sans text-lg font-bold text-deep-blue">
-                    Cuánto de tu léxico ya es normado
+                    Sustituciones correctas
                   </h3>
                   <p className="mt-1.5 text-sm leading-relaxed text-mineral">
                     «La vaina» y «el fierro» son{' '}
                     <Termino term="palabra comodín">palabras comodín</Termino>: se entienden
-                    entre compañeros y se pierden en un manual. Cambia cada expresión por el
-                    término que nombra la pieza y su función.
+                    en una conversación, pero no identifican una pieza concreta en un manual.
+                    Cambia cada expresión por el término que nombra la pieza o su función.
                   </p>
                 </div>
               </div>
@@ -309,7 +309,7 @@ export function ForensicLab() {
               aria-valuenow={standardization}
               aria-valuemin={0}
               aria-valuemax={100}
-              aria-label="Léxico normado"
+              aria-label="Sustituciones correctas"
               className="mt-5 h-2.5 w-full border border-line bg-paper-pure"
             >
               <div
@@ -386,9 +386,9 @@ export function ForensicLab() {
       )}
 
       <KeyIdea>
-        Los tres vicios se detectan con la misma pregunta: <strong>¿esto se puede
-        entender de otra manera?</strong> Si la respuesta es sí, todavía no está
-        listo para colgarse en la pared del taller.
+        Antes de usar una instrucción, comprueba si <strong>admite varias
+        interpretaciones, se contradice o deja fuera un paso necesario</strong>.
+        Corrige el problema que encuentres.
       </KeyIdea>
     </SectionWrapper>
   );

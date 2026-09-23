@@ -1,11 +1,19 @@
 export const STAGES = [
-  { id: 'intro', number: '01', group: 'Comprende', label: 'El reto', description: 'Por qué importa escribir con precisión', minutes: '8 min', points: 'Sin puntaje' },
+  { id: 'intro', number: '01', group: 'Comprende', label: 'Una orden ambigua', description: 'Por qué importa escribir con precisión', minutes: '8 min', points: 'Sin puntaje' },
   { id: 'forensic', number: '02', group: 'Comprende', label: 'Detecta errores', description: 'Ambigüedades, contradicciones y vacíos', minutes: '12 min', points: 'Hasta 4 puntos' },
-  { id: 'verbal', number: '03', group: 'Practica', label: 'Elige el verbo', description: 'Una forma verbal para todo el texto', minutes: '8 min', points: 'Hasta 2 puntos' },
+  { id: 'verbal', number: '03', group: 'Practica', label: 'Modos verbales', description: 'Una forma verbal para todo el texto', minutes: '8 min', points: 'Hasta 2 puntos' },
   { id: 'sequence', number: '04', group: 'Practica', label: 'Ordena los pasos', description: 'Una secuencia que se pueda seguir', minutes: '8 min', points: 'Hasta 2 puntos' },
   { id: 'safety-sheet', number: '05', group: 'Produce', label: 'Escribe tu texto', description: 'Texto instructivo final: preparación y procedimiento', minutes: '15 min', points: 'Hasta 2 puntos' },
   { id: 'results', number: '06', group: 'Produce', label: 'Revisa y entrega', description: 'Puntaje, mejoras y texto imprimible', minutes: '5 min', points: 'Resumen' },
 ];
+
+export function restoreSequenceSteps(steps, savedOrder) {
+  if (!Array.isArray(savedOrder) || savedOrder.length !== steps.length) return [...steps];
+  const byId = new Map(steps.map((step) => [step.id, step]));
+  if (new Set(savedOrder).size !== steps.length) return [...steps];
+  const restored = savedOrder.map((id) => byId.get(id));
+  return restored.every(Boolean) ? restored : [...steps];
+}
 
 export const CONNECTOR_LIST = [
   'inicialmente', 'en primer lugar', 'antes de operar',

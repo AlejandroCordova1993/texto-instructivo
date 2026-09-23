@@ -21,7 +21,7 @@ const GUESSES = [
   {
     key: 'distinto',
     label: 'Cada técnico entendió una altura distinta.',
-    reply: 'Exacto. «Una altura buena» significa una cosa para quien lleva veinte años y otra para quien lleva dos semanas. La orden no está mal escrita por fea: está mal escrita porque admite dos lecturas.',
+    reply: 'Correcto. «Una altura buena» no indica una medida verificable. Dos personas podrían interpretar la orden de manera distinta.',
   },
   {
     key: 'nada',
@@ -39,8 +39,8 @@ function Activacion() {
     <div className="card-quiet mb-14">
       <StepHeading
         number="?"
-        title="Antes de empezar: arriesga una respuesta"
-        hint="No hay penalización. Solo quiero saber qué piensas ahora."
+        title="Analiza una orden antes de leer la teoría"
+        hint="Esta primera respuesta no afecta tu puntaje."
         id="intro-activacion"
       />
 
@@ -187,15 +187,15 @@ export function IntroSection() {
       id="intro"
       step="01"
       monoTag="Marco operativo y seguridad industrial"
-      title="Por qué una instrucción mal escrita hace daño"
-      subtitle="Tu reto es escribir instrucciones que otra persona pueda seguir sin adivinar. Comienza por detectar lo que falta en una orden ambigua."
-      objective="Podrás explicar con un caso simulado por qué una orden técnica ambigua supone un riesgo, y reconocer las funciones del lenguaje que usa un manual."
+      title="Por qué importa escribir instrucciones precisas"
+      subtitle="Analiza qué ocurre cuando una orden admite varias interpretaciones. Después, redactarás instrucciones más claras."
+      objective="Explicar, a partir de un caso simulado, por qué una orden ambigua supone un riesgo y reconocer las funciones del lenguaje presentes en un manual."
       duration="8 minutos"
       points="Sin puntaje"
       practiceTag="Caso simulado"
       practiceTitle="Analiza una orden ambigua"
       tasks={[
-        'Predices qué pasó con una orden ambigua.',
+        'Predices qué podría ocurrir con una orden ambigua.',
         'Estudias qué es un texto instructivo y para qué existe.',
         'Analizas un escenario simulado y respondes la pregunta de interpretación.',
       ]}
@@ -254,7 +254,7 @@ export function IntroSection() {
               <div className="mb-1.5 flex items-center gap-2">
                 <HardHat className="h-4 w-4 text-inst-blue shrink-0" aria-hidden="true" />
                 <p className="font-sans text-xs sm:text-sm font-bold text-deep-blue">
-                  La regla de la precisión absoluta
+                  Qué debe indicar una instrucción
                 </p>
               </div>
               <p className="font-serif text-xs sm:text-sm italic leading-relaxed text-charcoal mb-3">
@@ -267,7 +267,7 @@ export function IntroSection() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                   <span className="flex items-center gap-1.5 text-charcoal">
                     <span className="flex h-4 w-4 shrink-0 items-center justify-center border border-deep-blue font-mono text-[0.65rem] font-bold text-deep-blue">1</span>
-                    Acción unívoca
+                    Acción clara
                   </span>
                   <span className="flex items-center gap-1.5 text-charcoal">
                     <span className="flex h-4 w-4 shrink-0 items-center justify-center border border-deep-blue font-mono text-[0.65rem] font-bold text-deep-blue">2</span>
@@ -290,10 +290,9 @@ export function IntroSection() {
       </div>
 
       <KeyIdea>
-        Un texto instructivo no se juzga por bonito, sino por <strong>cuántas
-        lecturas admite</strong>. A eso se le llama <Termino term="ambigüedad">ambigüedad</Termino>.
-        Si admite dos, hay que precisar la acción, el componente o la condición
-        antes de ponerla en práctica.
+        Una instrucción debe tener una interpretación clara. Si admite varias,
+        hay <Termino term="ambigüedad">ambigüedad</Termino>: precisa la acción,
+        el componente o la condición antes de usarla.
       </KeyIdea>
     </SectionWrapper>
   );

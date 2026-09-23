@@ -5,6 +5,7 @@ import { SectionWrapper } from './SectionWrapper';
 import { KeyIdea, Callout, StepHeading } from './Didactics';
 import { ArrowUp, ArrowDown, RotateCcw, Check, PlayCircle, Cog, SquareCheck, Lightbulb, PencilLine } from 'lucide-react';
 import { Termino } from './Glosario';
+import { restoreSequenceSteps } from '../lib/workshop';
 
 const PHASES = [
   {
@@ -35,20 +36,15 @@ export function SequenceConnectors() {
   const specialtyData = SPECIALTIES_DATA[specialty] || SPECIALTIES_DATA.automotriz;
   const { sequenceActivity } = specialtyData;
 
-  const [stepsOrder, setStepsOrder] = useState(() => {
-    const saved = progress.sequenceOrder;
-    if (saved?.length === sequenceActivity.steps.length) {
-      const rebuilt = saved.map((id) => sequenceActivity.steps.find((s) => s.id === id));
-      if (rebuilt.every(Boolean)) return rebuilt;
-    }
-    return [...sequenceActivity.steps];
-  });
+  const [stepsOrder, setStepsOrder] = useState(() =>
+    restoreSequenceSteps(sequenceActivity.steps, progress.sequenceOrder)
+  );
 
   // `null` = aún no ha comprobado. Evita mostrar "incorrecto" de entrada.
   const [verdict, setVerdict] = useState(progress.sequenceCompleted ? 'ok' : null);
 
   useEffect(() => {
-    setStepsOrder([...sequenceActivity.steps]);
+    setStepsOrder(restoreSequenceSteps(sequenceActivity.steps, progress.sequenceOrder));
     setVerdict(progress.sequenceCompleted ? 'ok' : null);
   }, [specialty]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -82,15 +78,15 @@ export function SequenceConnectors() {
       id="sequence"
       step="04"
       monoTag="Cohesión textual y párrafos de secuencia"
-      title="De cuatro órdenes sueltas a un procedimiento"
-      subtitle="Un procedimiento no es una lista de frases. Ordena los pasos y míralos convertirse en un párrafo."
-      objective="Podrás ordenar cronológicamente las fases de un procedimiento y enlazarlas con el conector temporal que corresponde a cada una."
+      title="Ordena los pasos de un procedimiento"
+      subtitle="Ordena las acciones y observa cómo los conectores las enlazan en un párrafo."
+      objective="Ordenar cuatro acciones y observar cómo los conectores expresan la secuencia en un párrafo."
       duration="8 minutos"
       points="2 de los 10 puntos"
       tasks={[
         'Estudias los conectores de cada fase del trabajo.',
-        'Ordenas los cuatro pasos de un procedimiento real.',
-        'Lees el párrafo que armaste sin darte cuenta.',
+        'Ordenas los cuatro pasos de un procedimiento de ejemplo.',
+        'Revisas el párrafo formado con los pasos ordenados.',
       ]}
     >
       {/* Barra compacta de fases (evita scroll vertical excesivo) */}
@@ -117,7 +113,7 @@ export function SequenceConnectors() {
       {/* Cabecera del paso */}
       <StepHeading
         title={sequenceActivity.title}
-        hint="Ordena los pasos cronológicamente con las flechas. Observa a la derecha cómo se ensambla el texto continuo (esta actividad califica hasta 2.0 puntos)."
+        hint="Ordena los pasos con las flechas. Observa a la derecha cómo se forma el párrafo (esta actividad califica hasta 2.0 puntos)."
         trailing={!isCompleted && (
           <button
             type="button"
@@ -245,7 +241,7 @@ export function SequenceConnectors() {
                 ) : (
                   <PencilLine className="h-4 w-4 text-mineral" aria-hidden="true" />
                 )}
-                {isCompleted ? 'Mira lo que acabas de escribir' : 'Párrafo técnico en vivo'}
+                {isCompleted ? 'Procedimiento ordenado' : 'Vista previa del párrafo'}
               </p>
               <span
                 className={`font-mono text-[0.65rem] uppercase tracking-wider px-2 py-0.5 border ${
@@ -260,7 +256,7 @@ export function SequenceConnectors() {
 
             <p className="mb-3 text-xs leading-relaxed text-mineral">
               {isCompleted
-                ? 'Ya no son cuatro órdenes sueltas. Con los conectores puestos, es un procedimiento que se lee de corrido:'
+                ? 'Así queda el párrafo con los pasos ordenados y enlazados:'
                 : 'A medida que mueves los pasos, los conectores enlazan las acciones en un párrafo continuo:'}
             </p>
 
@@ -282,10 +278,10 @@ export function SequenceConnectors() {
           <div className="border border-active-blue/30 bg-active-blue/5 p-4 space-y-2.5">
             <p className="flex items-center gap-1.5 font-sans text-xs font-bold text-deep-blue">
               <Lightbulb className="h-4 w-4 text-active-blue" aria-hidden="true" />
-              Lo que acabas de aprender
+              Conectores y orden de los pasos
             </p>
             <p className="text-xs leading-relaxed text-charcoal">
-              El <Termino term="conector cronológico">conector cronológico</Termino> no es un adorno: <strong>marca en qué fase del trabajo estás</strong> (inicio, desarrollo o cierre). Por eso «finalmente» no puede aparecer en el paso dos.
+              El <Termino term="conector cronológico">conector cronológico</Termino> indica la fase del procedimiento: <strong>inicio, desarrollo o cierre</strong>. Por eso «finalmente» no corresponde al segundo paso.
             </p>
             <div className="border-t border-active-blue/20 pt-2 text-xs leading-relaxed text-charcoal">
               <p className="font-bold text-deep-blue mb-1">

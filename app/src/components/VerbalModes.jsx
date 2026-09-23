@@ -51,15 +51,15 @@ export function VerbalModes() {
     <SectionWrapper
       id="verbal"
       step="03"
-      monoTag="Morfosintaxis técnica y estilo operativo"
-      title="Imperativo o infinitivo: elige uno y no lo sueltes"
-      subtitle="Las tres formas verbales de una instrucción, y la regla que de verdad importa."
-      objective="Podrás elegir el modo verbal que corresponde a cada tipo de documento técnico y mantenerlo sin mezclas en todo un procedimiento."
+      monoTag="Formas verbales en las instrucciones"
+      title="Mantén un mismo modo verbal"
+      subtitle="Compara imperativo, infinitivo e impersonal, y usa la forma elegida a lo largo del procedimiento."
+      objective="Reconocer tres formas verbales de las instrucciones y mantener una misma forma a lo largo de un procedimiento."
       duration="8 minutos"
       points="2 de los 10 puntos"
       tasks={[
         'Comparas las tres formas verbales sobre la misma orden.',
-        'Detectas una ruptura de estilo en un fragmento real.',
+        'Detectas un cambio de forma verbal en un ejemplo.',
         'Eliges la corrección que exige la norma.',
       ]}
     >
@@ -130,12 +130,12 @@ export function VerbalModes() {
         </p>
       </div>
 
-      {/* --- B. La regla de oro --- */}
+      {/* --- B. Consistencia verbal --- */}
       <div className="mt-8">
         <StepHeading
           number="B"
-          title="La regla de oro: no mezcles"
-          hint="El error más común no es elegir mal, sino usar los dos en el mismo documento."
+          title="Usa una misma forma verbal"
+          hint="Elige una forma para todo el documento: no alternes entre imperativo, infinitivo e impersonal."
         />
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
@@ -169,19 +169,19 @@ export function VerbalModes() {
             </div>
 
             <p className="mb-4 text-xs leading-relaxed text-mineral">
-              En un procedimiento técnico, variar el modo verbal obliga a releer. Si un paso dice «Accione» y el siguiente «Accionar», el operario se detiene a decidir si son la misma orden.
+              En un procedimiento técnico, alternar entre «Accione» y «Accionar» puede hacer menos clara la secuencia. Mantén una misma forma verbal.
             </p>
 
             <fieldset disabled={solved}>
               <legend className="mb-3 font-sans text-sm sm:text-base font-semibold text-deep-blue">
-                ¿Cuál es la corrección que exige la norma editorial técnica?
+                ¿Qué cambio mantiene la misma forma verbal?
               </legend>
 
               <div className="space-y-2">
                 {[
                   {
                     key: 'unificar',
-                    text: 'Unificar todo el procedimiento en un solo modo verbal para sostener la consistencia operativa.',
+                    text: 'Usar la misma forma verbal en todos los pasos del procedimiento.',
                   },
                   {
                     key: 'alternar',
@@ -222,8 +222,8 @@ export function VerbalModes() {
                 }`}
               >
                 {solved
-                  ? 'Eso es. La consistencia es lo que permite que otro técnico lea el manual a media maniobra sin tener que interpretar nada.'
-                  : 'Todavía no. Recuerda: lo que en literatura da ritmo, en un procedimiento técnico confunde y genera demoras. Elige la opción correcta.'}
+                  ? 'Correcto. Mantener la misma forma verbal facilita la lectura de los pasos.'
+                  : 'Todavía no. Busca la opción que mantiene la misma forma verbal en todos los pasos.'}
               </p>
             )}
           </div>
@@ -231,8 +231,8 @@ export function VerbalModes() {
       </div>
 
       <KeyIdea>
-        Elegir el modo verbal es una decisión de <strong>documento</strong>, no de
-        frase: se toma una vez, al principio, y se sostiene hasta el último paso.
+        Elige una forma verbal para el <strong>documento completo</strong> y
+        mantenla desde el primer paso hasta el cierre.
       </KeyIdea>
     </SectionWrapper>
   );

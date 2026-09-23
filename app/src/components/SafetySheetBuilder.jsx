@@ -67,7 +67,7 @@ function Scaffold({ starters, model, className = '' }) {
       </div>
 
       <p className="mb-4 text-xs leading-relaxed text-mineral">
-        Consulta disparadores de redacción o un modelo de referencia para desbloquear tu escritura sin copiar.
+        Consulta ideas para empezar o un modelo de referencia. Úsalos para orientar tu redacción, sin copiar el ejemplo.
       </p>
 
       <div className="flex flex-wrap gap-2">
@@ -345,7 +345,7 @@ export function SafetySheetBuilder() {
       monoTag="Taller de redacción guiada"
       title="Escribe tu texto instructivo"
       subtitle="Ahora aplica lo aprendido. Escribe dos párrafos: preparación y seguridad primero; procedimiento y cierre después."
-      objective="Podrás redactar un procedimiento técnico completo: equipo de protección, inspección previa y secuencia operativa enlazada con conectores."
+      objective="Redactar un texto instructivo de práctica con equipo de protección, inspección previa y acciones enlazadas con conectores."
       duration="15 minutos"
       points="2 de los 10 puntos"
       tasks={[
@@ -355,8 +355,8 @@ export function SafetySheetBuilder() {
       ]}
     >
       <Callout tone="aviso" title={`Tu equipo: ${mainMachine}`}>
-        No hay botón de guardar: todo lo que escribas se guarda solo en este
-        equipo, a medida que escribes. Este texto es una práctica de Lengua y
+        Tu texto se guarda automáticamente en este navegador mientras escribes.
+        Es una práctica de Lengua y
         Literatura, no un protocolo oficial de uso de la máquina.
       </Callout>
 
@@ -366,7 +366,7 @@ export function SafetySheetBuilder() {
           number="1"
           id="epp-title"
           title={<>Elige el <Termino term="epp">equipo de protección</Termino></>}
-          hint="Ojo: en la lista hay equipos que NO deben usarse en este puesto. Elegirlos resta."
+          hint="Algunos equipos no corresponden a este puesto. Seleccionarlos resta puntos."
           trailing={
             <p className={`meta-pill ${requiredPicked === requiredCount ? 'meta-pill--done' : ''}`}>
               <HardHat className="h-3.5 w-3.5" aria-hidden="true" />
@@ -423,9 +423,9 @@ export function SafetySheetBuilder() {
 
         {trapsPicked.length > 0 && (
           <div role="status" className="mt-5 animate-settleIn">
-            <Callout tone="peligro" title="Cuidado con lo que marcaste">
+            <Callout tone="peligro" title="Revisa el equipo seleccionado">
               Seleccionaste {trapsPicked.length === 1 ? 'un equipo prohibido' : `${trapsPicked.length} equipos prohibidos`} en
-              este puesto. Vuelve a leer la razón que aparece debajo de cada tarjeta roja.
+              este puesto. Lee la explicación debajo de cada equipo señalado y desmárcalo.
             </Callout>
           </div>
         )}
@@ -507,11 +507,11 @@ export function SafetySheetBuilder() {
           number="3"
           id="mode-title"
           title="Elige el modo verbal del procedimiento"
-          hint="El que elijas aquí es el que tendrás que sostener en todo el párrafo 4."
+          hint="La forma que elijas aquí debe mantenerse en el segundo párrafo."
         />
 
         <p className="mb-4 max-w-reading text-xs leading-relaxed text-charcoal">
-          <strong>¿Por qué debes elegirlo?</strong> La redacción técnica industrial exige uniformidad gramatical estricta. Si seleccionas <strong>Infinitivo</strong>, todas las acciones de tu procedimiento deben terminar en <em>-ar, -er, -ir</em> (ej. centrar, ajustar, verificar). Si seleccionas <strong>Imperativo</strong>, formularás órdenes directas al operario (ej. centre, ajuste, verifique). <strong>No mezcles ambos modos</strong> dentro de tu procedimiento.
+          <strong>¿Por qué debes elegirlo?</strong> Para que las instrucciones mantengan la misma forma. Con el <strong>infinitivo</strong>, escribe «centrar», «ajustar» o «verificar»; con el <strong>imperativo</strong>, «centre», «ajuste» o «verifique». Usa la forma elegida en todas las acciones del segundo párrafo.
         </p>
 
         <div role="radiogroup" aria-labelledby="mode-title" className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -603,7 +603,7 @@ export function SafetySheetBuilder() {
               </div>
 
               <p className="mt-2.5 border-t border-line/60 pt-2 font-mono text-[11px] text-inst-blue">
-                ★ <strong>Regla de oro:</strong> Recuerda mantener de inicio a fin el modo <strong>{verbalModeChosen.toUpperCase()}</strong> ({verbalModeChosen === 'infinitivo' ? 'centrar, cortar, accionar, verificar' : 'centre, corte, accione, verifique'}).
+                Mantén el modo <strong>{verbalModeChosen.toUpperCase()}</strong> de principio a fin ({verbalModeChosen === 'infinitivo' ? 'centrar, cortar, accionar, verificar' : 'centre, corte, accione, verifique'}).
               </p>
             </div>
 
